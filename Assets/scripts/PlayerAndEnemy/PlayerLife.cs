@@ -21,13 +21,12 @@ public class PlayerLife : MonoBehaviour
     }
     void die()
     {
-        if (transform.parent != null)
+        if (Attributes.IsPlayer==0)transform.parent.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<EverythingPool>().ReturnItem(transform.parent.gameObject);
+        else
         {
-            if(transform.parent.CompareTag("enemy"))
-            {
-                transform.parent.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<EverythingPool>().ReturnItem(transform.parent.gameObject);
-            }
+            Attributes.GameOver.gameObject.SetActive(true);//出现游戏结束的按钮
+            Attributes.TempCamera.gameObject.SetActive(true);//临时设置一个摄像头
+            gameObject.SetActive(false);
         }
-        Destroy(this.gameObject);
     }
 }

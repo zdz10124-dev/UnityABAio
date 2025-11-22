@@ -44,7 +44,9 @@ public class Attributes : MonoBehaviour
     //能力
     public List<Ability> allAbilities;
 
-
+    //部分引用
+    public GameObject GameOver;
+    public Camera TempCamera;
     // Start is called before the first frame update
     public void Reset()//用于死后重置
     {    
@@ -72,8 +74,10 @@ public class Attributes : MonoBehaviour
         AttackPowerLV = 0;
         AttackRangeLV = 0;
 
+        GameOver.gameObject.SetActive(false);
         gameObject.SetActive(true);
-}
+        TempCamera.gameObject.SetActive(false);
+    }
     void Start()
     {
         //Reset();
