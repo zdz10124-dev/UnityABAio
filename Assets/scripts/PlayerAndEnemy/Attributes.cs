@@ -14,7 +14,7 @@ public class Attributes : MonoBehaviour
     public int IsPlayer = 0;
 
     public float MoveSpeed = 1f;
-
+    //关于角色相关的东西在inspector里改是没有用的
 
 
     public float hp = 10f;
@@ -46,8 +46,37 @@ public class Attributes : MonoBehaviour
 
 
     // Start is called before the first frame update
+    public void Reset()//用于死后重置
+    {    
+        MoveSpeed = 1f;
+
+
+
+        hp = 10f;
+        MaxHP = 10f;
+
+         Defense = 0f;
+        //攻击相关
+        BulletSpeed = 5f;//子弹速度
+        AttackRange = 5f;//攻击距离
+        AttackPower = 1f;//攻击力
+        AttackTime = 20;//攻击间隔
+        //升级相关
+        xp = 0f;
+        NextLevelXP = 5;
+        level = 0;
+        AbilityPerLevel = 3;
+
+        MoveSpeedLV = 0;
+        DefenseLV = 0;
+        AttackPowerLV = 0;
+        AttackRangeLV = 0;
+
+        gameObject.SetActive(true);
+}
     void Start()
     {
+        //Reset();
         InitializeAbilities(); // 初始化能力列表
     }
 
