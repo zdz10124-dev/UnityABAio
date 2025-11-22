@@ -29,7 +29,7 @@ public class AllControl : MonoBehaviour
         public int AbilityButtonR = 300;//abilitybutton中心点所在范围
         public int AbilityButtonBias = 300;//设置一下偏移方便居中
         //刷新率
-        public int MaxFPS = 60;
+        public int MaxFPS = 60;//最大帧率
 
         //水果
         public float XPperCherry = 10f;//一个樱桃多少经验

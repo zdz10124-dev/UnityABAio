@@ -26,6 +26,7 @@ public class PlayerLife : MonoBehaviour
         {
             Attributes.GameOver.gameObject.SetActive(true);//出现游戏结束的按钮
             Attributes.TempCamera.gameObject.SetActive(true);//临时设置一个摄像头
+            Attributes.TempCamera.transform.position=transform.position;//移动到角色死亡位置
             gameObject.SetActive(false);
         }
     }

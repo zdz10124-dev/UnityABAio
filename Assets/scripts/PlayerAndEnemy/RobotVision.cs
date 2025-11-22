@@ -26,6 +26,7 @@ public class RobotVision : MonoBehaviour
         //Debug.LogFormat("俺寻思俺碰到了啊,我碰到tag={0}", collision.gameObject.tag) ;
         if(!enemy.GetComponent<EnemyAI>().CollList.Contains(collision)) enemy.GetComponent<EnemyAI>().CollList.Add(collision);//如果没有该对象再放进去
     }
+
     void Update()
     {
         GetComponent<Collider2D>().transform.position=enemy.transform.position;

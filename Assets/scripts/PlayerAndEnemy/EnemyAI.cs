@@ -26,6 +26,10 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        for (int i = 0; i < CollList.Count; i++)
+        {
+            if (Vector2.Distance(CollList[i].transform.position, rb.transform.position)>Attributes.VisionRange || !CollList[i].gameObject.activeSelf)CollList.RemoveAt(i);//在视野外的物体去除
+        }
         //Debug.LogFormat("当前状态是{0}", state);
         switch(state)
         {
@@ -153,7 +157,7 @@ public class EnemyAI : MonoBehaviour
         if (Player != null)
         {
             //退出：脱离视野 或 血量太低
-            if (Vector2.Distance(Player.transform.position, rb.transform.position) >= Attributes.VisionRange + Attributes.ExtraChaseRange)//脱离范围则回到漫步状态
+            if (Vector2.Distance(Player.transform.position, rb.transform.position) >= Attributes.VisionRange + Attributes.ExtraChaseRange || !Player.gameObject.activeSelf)//脱离范围则回到漫步状态
             {
                 Player = null;
                 state = 0;

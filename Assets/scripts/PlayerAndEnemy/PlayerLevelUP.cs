@@ -44,7 +44,16 @@ public class PlayerLevelUP : MonoBehaviour
             
         }
         if (Attributes.IsPlayer != 0 && WaitQueue > 0) AttributeEnhancement();
-        if(Attributes.IsPlayer!=0 && WaitQueue>0 && (Attributes.level-WaitQueue+1)%5==0 && IsAbility==0) GetAbility();
+        if (Attributes.IsPlayer == 0 && WaitQueue > 0) RobotAttributeEnhancement();//让敌人也能成长
+        if (Attributes.IsPlayer!=0 && WaitQueue>0 && (Attributes.level-WaitQueue+1)%5==0 && IsAbility==0) GetAbility();
+    }
+    void RobotAttributeEnhancement()
+    {
+        int p = Random.Range(0, 4);//也许这里是屎山的根源之一，但是我现在懒得重构了，所以就用ifelse了。。。
+        if(p==0)DefenseUp();
+        else if(p==1)AttackPowerUp();
+        else if(p==2)AttackRangeUp();
+        else if(p==3)MoveSpeedUp();
     }
     void AttributeEnhancement()
     {
