@@ -11,7 +11,7 @@ public class AbilityButton : MonoBehaviour, IPointerEnterHandler,IPointerExitHan
     // Start is called before the first frame update
     public TextMeshProUGUI TextDescription;
     public TextMeshProUGUI TextName;
-    private int IsHovering=0;
+    //private int IsHovering=0;
     private Ability Ability;
     private Action HideButton;
     public void Initialize(Ability ability,Action hidebutton)
@@ -26,13 +26,13 @@ public class AbilityButton : MonoBehaviour, IPointerEnterHandler,IPointerExitHan
     {
         Debug.Log("ะüอฃมห\n");
         TextDescription.gameObject.SetActive(true);
-        IsHovering = 1;
+        //IsHovering = 1;
     }
     public void OnPointerExit(PointerEventData eventData)
     {
         Debug.Log("ื฿มห\n");
         TextDescription.gameObject.SetActive(false);
-        IsHovering = 0;
+        //IsHovering = 0;
     }
     public void OnPointerClick(PointerEventData eventData)
     {

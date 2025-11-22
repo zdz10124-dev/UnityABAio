@@ -73,10 +73,12 @@ public class Attributes : MonoBehaviour
         DefenseLV = 0;
         AttackPowerLV = 0;
         AttackRangeLV = 0;
-
+        //按钮啊，人物啊需要做的隐身现身
         GameOver.gameObject.SetActive(false);
         gameObject.SetActive(true);
         TempCamera.gameObject.SetActive(false);
+        //一些ui需要更新
+        gameObject.GetComponent<PlayerLevelUP>().UpdateLV();
     }
     void Start()
     {

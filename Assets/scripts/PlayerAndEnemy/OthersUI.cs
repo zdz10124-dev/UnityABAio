@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+
 public class OthersUI : MonoBehaviour
 {
     private Attributes Attributes;
@@ -14,7 +15,6 @@ public class OthersUI : MonoBehaviour
     {
         Attributes = GetComponent<Attributes>();
     }
-
     // Update is called once per frame
     void Update()
     {

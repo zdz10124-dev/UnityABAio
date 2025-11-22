@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,14 +17,19 @@ public class PlayerLevelUP : MonoBehaviour
     private List<Button> AbilityButtonList=new List<Button>();
     private int WaitQueue = 0;
     private int IsAbility = 0;//表示当前已经有abilitybutton
-    private int IsAttributeEnhance = 0;//表示当前已经有属性升级按钮显示
+    //private int IsAttributeEnhance = 0;//表示当前已经有属性升级按钮显示
+    public TextMeshProUGUI MyLV;//显示等级的文字
     // Start is called before the first frame update
     void Start()
     {
         Attributes= GetComponent<Attributes>();
-
+        UpdateLV();
     }
-    
+    public void UpdateLV()
+    {
+        //if (MyLV == null) Debug.Log("我的对象去哪了！？？？？");
+        MyLV.text = "LV:" + Attributes.level;//更新显示等级ui
+    }
     // Update is called once per frame
     void Update()
     {
@@ -32,6 +38,7 @@ public class PlayerLevelUP : MonoBehaviour
             Attributes.xp-=Attributes.NextLevelXP;
             Attributes.NextLevelXP *= AllControl.GameManager.Instance.GrowthRate;
             Attributes.level++;
+            UpdateLV();//更新显示lv
             //Debug.Log("我升级了");
             WaitQueue++;//可以多次积累，防止因为长时间不选而跳过
             
@@ -41,7 +48,7 @@ public class PlayerLevelUP : MonoBehaviour
     }
     void AttributeEnhancement()
     {
-        IsAttributeEnhance = 1;
+        //IsAttributeEnhance = 1;
         for (int i = 0; i < buttons.Length; i++)
         {
             buttons[i].gameObject.SetActive(true);
@@ -83,7 +90,7 @@ public class PlayerLevelUP : MonoBehaviour
 
 
         WaitQueue--;
-        IsAttributeEnhance=0;
+        //IsAttributeEnhance=0;
     }
     List<Ability> GetRandomAbilities(int count)
     {
@@ -112,7 +119,7 @@ public class PlayerLevelUP : MonoBehaviour
             if(AbilityButtonList.Count<=i)NewButton= Instantiate(AbilityButton,Vector3.zero, Quaternion.identity);
             else NewButton = AbilityButtonList[i];
             NewButton.gameObject.SetActive(true);//使其显示
-            NewButton.gameObject.transform.parent = Canvas.transform;//放到canvas里
+            NewButton.gameObject.transform.SetParent(Canvas.transform,false);//放到canvas里
             NewButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(-AllControl.GameManager.Instance.AbilityButtonR+AllControl.GameManager.Instance.AbilityButtonBias + (i - 1) * (2 * AllControl.GameManager.Instance.AbilityButtonR / (Attributes.AbilityPerLevel)), -100, 0);//位置居中等距显示
             
             AbilityButton AbilityButtonScript = NewButton.GetComponent<AbilityButton>();
