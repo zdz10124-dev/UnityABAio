@@ -6,9 +6,9 @@ public class Ability
 {
     public string abilityName;
     public string description;
-    public int AbilityLevel=0;
-    public System.Action unlockAction;
-    public System.Func<bool> AbleCheck;
+    public int AbilityLevel;
+    public System.Action<int> unlockAction;
+    public System.Func<int,bool> AbleCheck;//参数int返回值bool
 }
 public class Attributes : MonoBehaviour
 {
@@ -54,6 +54,12 @@ public class Attributes : MonoBehaviour
         Assassin,//刺客
         Summon//召唤师
     };
+    public enum AbilityLevels
+    {
+        Hedgehog
+    }
+    public List<int> AbilityLevel =new List<int> {0};
+    public float AbilityHedgehog=0;
 
     //部分引用
     public GameObject GameOver;
@@ -92,6 +98,9 @@ public class Attributes : MonoBehaviour
         InGameCanvas.gameObject.SetActive(true);
         //一些ui需要更新
         gameObject.GetComponent<PlayerLevelUP>().UpdateLV();
+        //重置特殊能力
+        for (int i = 0; i < allAbilities.Count; i++) allAbilities[i].AbilityLevel = 0;
+        AbilityHedgehog = 0;
     }
     void Start()
     {
@@ -104,43 +113,56 @@ public class Attributes : MonoBehaviour
     {
 
     }
+    public void GetDamage(Attributes EnemyAttributes,float damage,bool ReflectDamage=false)
+    {
+        hp -= (damage * 2 / (Defense + 2));//扣血公式：乘以（2/防御力+2)
+        Debug.LogFormat("当前反伤比例是{0},isplayer是{1}\n", AbilityHedgehog, IsPlayer);
+        if(AbilityHedgehog>0 && !ReflectDamage)EnemyAttributes.GetDamage(this, damage*AbilityHedgehog,true);//反弹伤害 且不反弹反伤的反伤
+    }
     void InitializeAbilities()
     {
         allAbilities = new List<Ability>
         {
             new Ability {
-                abilityName = "二段跳",
-                description = "可以在空中再次跳跃",
-                unlockAction = () => { 
-                    // 具体的二段跳解锁逻辑
-                    Debug.Log("二段跳已解锁！");
-                    // 比如：GetComponent<PlayerMovement>().canDoubleJump = true;
+                abilityName = "刺猬",
+                description = "可以在收到伤害时反弹部分伤害",
+  
+                unlockAction = (int L) => {
+                    MyStyle=(int)AbilityStyle.Thorns;
+                    if(L==1)AbilityHedgehog=0.1f;//反弹的伤害比例
+                    if(L==2)AbilityHedgehog=0.3f;
+                    if(L==3)AbilityHedgehog=0.5f;
+                    if(L==4)AbilityHedgehog=0.6f;
+                    if(L==5)AbilityHedgehog=0.7f;
+
                 },
-                AbleCheck = ()=>
+                AbleCheck = (int L)=>
                 {
-                    return true;
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==-1 || MyStyle==(int)AbilityStyle.Thorns)return true;
+                    else return false;//已经有了别的流派
                 }
             },
             new Ability {
                 abilityName = "冲刺",
                 description = "短时间内大幅提升移动速度",
-                unlockAction = () => { 
+                unlockAction = (int L) => { 
                     // 具体的冲刺解锁逻辑
                     Debug.Log("冲刺已解锁！");
                 },
-                AbleCheck = ()=>
+                AbleCheck = (int L)=>
                 {
-                    return true;
+                   return true;
                 }
             },
             new Ability {
                 abilityName = "冲刺",
                 description = "短时间内大幅提升移动速度",
-                unlockAction = () => { 
+                unlockAction = (int L) => { 
                     // 具体的冲刺解锁逻辑
                     Debug.Log("冲刺已解锁！");
                 },
-                AbleCheck = ()=>
+                AbleCheck = (int L)=>
                 {
                     return true;
                 }

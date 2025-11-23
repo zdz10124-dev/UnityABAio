@@ -32,8 +32,7 @@ public class Bullet : MonoBehaviour
         if(collision.CompareTag("Player") && collision.gameObject != Attributes.gameObject)//子弹碰到人且不是自己
         {
             //Debug.Log("我们确实击中了");
-            Attributes enemy=collision.gameObject.GetComponent<Attributes>();
-            enemy.hp -= (Attributes.AttackPower * 2 / (enemy.Defense + 2));//扣血公式：攻击力乘以（2/防御力+2)
+            collision.gameObject.GetComponent<Attributes>().GetDamage(Attributes,Attributes.AttackPower);
             Pool.GetComponent<BulletPool>().ReturnBullet(this.gameObject);
         }
     }

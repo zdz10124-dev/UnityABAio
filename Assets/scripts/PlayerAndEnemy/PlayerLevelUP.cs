@@ -105,7 +105,7 @@ public class PlayerLevelUP : MonoBehaviour
     List<Ability> GetRandomAbilities(int count)
     {
         // 获取所有未解锁的能力
-        List<Ability> available = Attributes.allAbilities.FindAll(a => a.AbleCheck());
+        List<Ability> available = Attributes.allAbilities.FindAll(a => a.AbleCheck(a.AbilityLevel));
 
         // 随机选择
         List<Ability> selected = new List<Ability>();
@@ -122,12 +122,12 @@ public class PlayerLevelUP : MonoBehaviour
     {
         WaitQueue--;
         List<Ability> selected = GetRandomAbilities(Attributes.AbilityPerLevel);
-        for (int i = 0; i < Attributes.AbilityPerLevel; i++)
+        for (int i = 0; i < selected.Count; i++)
         {
             Button NewButton;
             
-            if(AbilityButtonList.Count<=i)NewButton= Instantiate(AbilityButton,Vector3.zero, Quaternion.identity);
-            else NewButton = AbilityButtonList[i];
+            if(AbilityButtonList.Count<=i)NewButton= Instantiate(AbilityButton,Vector3.zero, Quaternion.identity);//如果能力按钮对象不够，就再建一个
+            else NewButton = AbilityButtonList[i];//如果有了就不用反复创建了避免无效操作
             NewButton.gameObject.SetActive(true);//使其显示
             NewButton.gameObject.transform.SetParent(Canvas.transform,false);//放到canvas里
             NewButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(-AllControl.GameManager.Instance.AbilityButtonR+AllControl.GameManager.Instance.AbilityButtonBias + (i - 1) * (2 * AllControl.GameManager.Instance.AbilityButtonR / (Attributes.AbilityPerLevel)), -100, 0);//位置居中等距显示
