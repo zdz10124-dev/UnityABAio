@@ -6,8 +6,9 @@ public class Ability
 {
     public string abilityName;
     public string description;
-    public bool isUnlocked=false;
+    public int AbilityLevel=0;
     public System.Action unlockAction;
+    public System.Func<bool> AbleCheck;
 }
 public class Attributes : MonoBehaviour
 {
@@ -43,10 +44,21 @@ public class Attributes : MonoBehaviour
     public float FleeHPPersent = 0.2f;//血量比例为这个时逃跑
     //能力
     public List<Ability> allAbilities;
+    public int MyStyle = -1;//选择的流派
+    public enum AbilityStyle
+    {
+        FirePower,//火力流
+        Sniper,//狙击流
+        Thorns,//反伤流
+        EatFruit,//吃水果流
+        Assassin,//刺客
+        Summon//召唤师
+    };
 
     //部分引用
     public GameObject GameOver;
     public Camera TempCamera;
+    public Canvas InGameCanvas;
     // Start is called before the first frame update
     public void Reset()//用于死后重置
     {    
@@ -77,6 +89,7 @@ public class Attributes : MonoBehaviour
         GameOver.gameObject.SetActive(false);
         gameObject.SetActive(true);
         TempCamera.gameObject.SetActive(false);
+        InGameCanvas.gameObject.SetActive(true);
         //一些ui需要更新
         gameObject.GetComponent<PlayerLevelUP>().UpdateLV();
     }
@@ -102,6 +115,10 @@ public class Attributes : MonoBehaviour
                     // 具体的二段跳解锁逻辑
                     Debug.Log("二段跳已解锁！");
                     // 比如：GetComponent<PlayerMovement>().canDoubleJump = true;
+                },
+                AbleCheck = ()=>
+                {
+                    return true;
                 }
             },
             new Ability {
@@ -110,6 +127,10 @@ public class Attributes : MonoBehaviour
                 unlockAction = () => { 
                     // 具体的冲刺解锁逻辑
                     Debug.Log("冲刺已解锁！");
+                },
+                AbleCheck = ()=>
+                {
+                    return true;
                 }
             },
             new Ability {
@@ -118,6 +139,10 @@ public class Attributes : MonoBehaviour
                 unlockAction = () => { 
                     // 具体的冲刺解锁逻辑
                     Debug.Log("冲刺已解锁！");
+                },
+                AbleCheck = ()=>
+                {
+                    return true;
                 }
             }
             // 其他能力...

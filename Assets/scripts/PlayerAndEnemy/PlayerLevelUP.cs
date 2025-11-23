@@ -15,7 +15,7 @@ public class PlayerLevelUP : MonoBehaviour
     public Button[] buttons;
     public Button AbilityButton;
     private List<Button> AbilityButtonList=new List<Button>();
-    private int WaitQueue = 0;
+    public int WaitQueue = 0;
     private int IsAbility = 0;//表示当前已经有abilitybutton
     //private int IsAttributeEnhance = 0;//表示当前已经有属性升级按钮显示
     public TextMeshProUGUI MyLV;//显示等级的文字
@@ -54,6 +54,7 @@ public class PlayerLevelUP : MonoBehaviour
         else if(p==1)AttackPowerUp();
         else if(p==2)AttackRangeUp();
         else if(p==3)MoveSpeedUp();
+        WaitQueue--;
     }
     void AttributeEnhancement()
     {
@@ -88,7 +89,7 @@ public class PlayerLevelUP : MonoBehaviour
         Attributes.MoveSpeed = 2f + 0.8f * Mathf.Log(Attributes.MoveSpeedLV + 1);
         HideButton();
     }
-    private void HideButton()
+    public void HideButton()
     {
         for (int i = 0; i < buttons.Length; i++)
         {
@@ -104,11 +105,11 @@ public class PlayerLevelUP : MonoBehaviour
     List<Ability> GetRandomAbilities(int count)
     {
         // 获取所有未解锁的能力
-        List<Ability> available = Attributes.allAbilities.FindAll(a => !a.isUnlocked);
+        List<Ability> available = Attributes.allAbilities.FindAll(a => a.AbleCheck());
 
         // 随机选择
         List<Ability> selected = new List<Ability>();
-        while (selected.Count < count && available.Count > 0)
+        while (selected.Count < count && available.Count > 0)//防止越界
         {
             int randomIndex = Random.Range(0, available.Count);//每次选择一个
             selected.Add(available[randomIndex]);//放进结果栏
@@ -137,13 +138,13 @@ public class PlayerLevelUP : MonoBehaviour
         }
         IsAbility = 1;
     }
-    void HideAbilityButton()
+    public void HideAbilityButton()
     {
         for (int i = 0; i < AbilityButtonList.Count; i++)
         {
             AbilityButtonList[i].gameObject.SetActive(false);
         }
-
+        IsAbility = 0;
 
     }
 }

@@ -37,7 +37,7 @@ public class AbilityButton : MonoBehaviour, IPointerEnterHandler,IPointerExitHan
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("我按了");
-        Ability.isUnlocked= true;//标记已经解锁
+        Ability.AbilityLevel++;//能力等级+1
         Ability.unlockAction();
         HideButton();//选中一个能力就隐藏其他所有能力
     }
