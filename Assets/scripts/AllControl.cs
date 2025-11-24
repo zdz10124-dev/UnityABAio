@@ -37,6 +37,9 @@ public class AllControl : MonoBehaviour
         public float CherrySpawnMinTime = 1f;//最小值
         public float CherryHPUp = 1f;//一个樱桃回的血
         public float GrowthRate = 1.1f;//下一级比上一级所需经验的比例
+        //击杀所得
+        public float BasicLootXP = 10f;//杀死敌人的基础获得经验值
+        public float LootXPRate = 0.5f;//杀死敌人时掠夺的经验值
         //场景池相关
         public int BulletPoolSize = 30;
         public int FruitPoolSize = 100;

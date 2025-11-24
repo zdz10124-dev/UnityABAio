@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;  
+using UnityEngine;
+using static AllControl;
 
 public class PlayerLife : MonoBehaviour
 {
+    public Attributes LastAttacker;
     private Attributes Attributes;
     // Start is called before the first frame update
     void Start()
@@ -21,6 +23,10 @@ public class PlayerLife : MonoBehaviour
     }
     void die()
     {
+        if (LastAttacker != null)
+        {
+            LastAttacker.xp += Attributes.TotalXP * GameManager.Instance.LootXPRate + GameManager.Instance.BasicLootXP;
+        }
         if (Attributes.IsPlayer==0)transform.parent.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<EverythingPool>().ReturnItem(transform.parent.gameObject);
         else
         {

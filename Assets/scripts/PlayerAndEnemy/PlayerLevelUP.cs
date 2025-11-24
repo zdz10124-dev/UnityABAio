@@ -36,6 +36,7 @@ public class PlayerLevelUP : MonoBehaviour
         if(Attributes.xp>=Attributes.NextLevelXP-0.001f)
         {
             Attributes.xp-=Attributes.NextLevelXP;
+            Attributes.TotalXP+=Attributes.NextLevelXP;
             Attributes.NextLevelXP *= AllControl.GameManager.Instance.GrowthRate;
             Attributes.level++;
             UpdateLV();//更新显示lv
@@ -85,8 +86,17 @@ public class PlayerLevelUP : MonoBehaviour
     }
     public void MoveSpeedUp()
     {
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Thorns && Attributes.MoveSpeed >= Attributes.AbilityThornsMaxMoveSpeed)
+        {
+            Debug.Log("已经到达最大上限");//升级前检测是否还能升级
+            return;
+        }
         Attributes.MoveSpeedLV += 1;//每升一级可以获得的提升(对数函数)
-        Attributes.MoveSpeed = 2f + 0.8f * Mathf.Log(Attributes.MoveSpeedLV + 1);
+        Attributes.MoveSpeed = 1f + 0.8f * Mathf.Log(Attributes.MoveSpeedLV + 1);
+        if (Attributes.MyStyle==(int)Attributes.AbilityStyle.Thorns && Attributes.MoveSpeed > Attributes.AbilityThornsMaxMoveSpeed)
+        {
+            Attributes.MoveSpeed = Attributes.AbilityThornsMaxMoveSpeed;//反伤流的限制
+        }
         HideButton();
     }
     public void HideButton()
