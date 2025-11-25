@@ -46,7 +46,7 @@ public class PlayerLevelUP : MonoBehaviour
         }
         if (Attributes.IsPlayer != 0 && WaitQueue > 0) AttributeEnhancement();
         if (Attributes.IsPlayer == 0 && WaitQueue > 0) RobotAttributeEnhancement();//让敌人也能成长
-        if (Attributes.IsPlayer!=0 && WaitQueue>0 && (Attributes.level-WaitQueue+1)%5==0 && IsAbility==0) GetAbility();
+        if (Attributes.IsPlayer!=0 && WaitQueue>0 && (Attributes.level-WaitQueue+1)%2==0 && IsAbility==0) GetAbility();
     }
     void RobotAttributeEnhancement()
     {

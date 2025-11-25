@@ -23,6 +23,10 @@ public class PlayerLife : MonoBehaviour
     }
     void die()
     {
+        for (int i = Attributes.DamageLines.Count - 1; i >= 0; i--)
+        {
+            Attributes.DamageLinePool.GetComponent<EverythingPool>().ReturnItem(Attributes.DamageLines[i]);//归还所有伤害线
+        }
         if (LastAttacker != null)
         {
             LastAttacker.xp += Attributes.TotalXP * GameManager.Instance.LootXPRate + GameManager.Instance.BasicLootXP;
@@ -41,7 +45,8 @@ public class PlayerLife : MonoBehaviour
                 gameObject.GetComponent<PlayerLevelUP>().WaitQueue = 0;
                 
             }
-            gameObject.SetActive(false);
+
+            gameObject.SetActive(false);//禁用物体
         }
     }
 }

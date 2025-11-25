@@ -62,6 +62,12 @@ public class Attributes : MonoBehaviour
     public float AbilityThornsHedgehog=0;//刺猬的反伤比例
     public float AbilityThornsSheild = 1;//能力：盾 的防御力倍率
     public float AbilityThornsHoldGround = 1;//能力：坚守阵地的防御力增幅比例
+    public int AbilityThornsHurtEachOther = 0;//能力：互相伤害，指示是否启用
+    public float AbilityThornsHurtEachOtherRange = 0;//线的最大距离
+    public float AbilityThornsHurtEachOtherDamage = 0;//线的帧伤
+    public List<GameObject> DamageLines;
+    public List<Attributes> LiningPlayers;
+
 
     //部分引用
     //死亡后界面相关
@@ -70,6 +76,8 @@ public class Attributes : MonoBehaviour
     public Canvas InGameCanvas;
     //其他
     private Rigidbody2D rb;
+    //对象池
+    public GameObject DamageLinePool;
     // Start is called before the first frame update
     public void Reset()//用于死后重置
     {
@@ -110,7 +118,12 @@ public class Attributes : MonoBehaviour
         AbilityThornsHedgehog = 0;
         AbilityThornsSheild = 1;
         AbilityThornsHoldGround = 1;
-    }
+        AbilityThornsHurtEachOther = 0;//能力：互相伤害，指示是否启用
+        AbilityThornsHurtEachOtherRange = 0;//线的最大距离
+        AbilityThornsHurtEachOtherDamage = 0f;//线的帧伤
+        DamageLines.Clear();
+        LiningPlayers.Clear();
+}
     void Start()
     {
         //Reset();
@@ -121,20 +134,36 @@ public class Attributes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        BeDamaedByLine();
+    }
+    void BeDamaedByLine()
+    {
+        for (int i = LiningPlayers.Count - 1; i >= 0; i--)
+        {
+            Attributes enemy = LiningPlayers[i];
+            if(Vector2.Distance(rb.transform.position,enemy.rb.transform.position)>enemy.AbilityThornsHurtEachOtherRange || enemy==null)//超出链接或者攻击者死了
+            {
+                DamageLinePool.GetComponent<EverythingPool>().ReturnItem(DamageLines[i]);
+                DamageLines.RemoveAt(i);
+                LiningPlayers.RemoveAt(i);//超出范围，去除链接
+                continue;
+            }
+            GetDamage(enemy, enemy.AbilityThornsHurtEachOtherDamage, false);//敌我双方受到伤害，且不触发反伤
+            enemy.GetDamage(enemy, enemy.AbilityThornsHurtEachOtherDamage, false);
+        }
     }
     bool CheckStatic()
     {
         if ((rb.velocity.x < GameManager.Instance.MinStep || rb.velocity.x > -GameManager.Instance.MinStep) && (rb.velocity.y < GameManager.Instance.MinStep || rb.velocity.y > -GameManager.Instance.MinStep)) return true;//x,y速度小于某一值判定为静止
         return false;
      }
-    public void GetDamage(Attributes EnemyAttributes,float damage,bool ReflectDamage=false)
+    public void GetDamage(Attributes EnemyAttributes,float damage,bool ReflectDamage=true)
     {
         gameObject.GetComponent<PlayerLife>().LastAttacker = EnemyAttributes;
         if (!CheckStatic()) hp -= (damage * 2 / (Defense + 2));//扣血公式：乘以（2/防御力+2)
         else hp -= (damage * 2 / (Defense*AbilityThornsHoldGround + 2));//如果静止，乘以系数
         Debug.LogFormat("当前反伤比例是{0},isplayer是{1}\n", AbilityThornsHedgehog, IsPlayer);
-        if(AbilityThornsHedgehog>0 && !ReflectDamage)EnemyAttributes.GetDamage(this, damage*AbilityThornsHedgehog,true);//反弹伤害 且不反弹反伤的反伤
+        if(AbilityThornsHedgehog>0 && ReflectDamage)EnemyAttributes.GetDamage(this, damage*AbilityThornsHedgehog,false);//反弹伤害 且不反弹反伤的反伤
     }
     void InitializeAbilities()
     {
@@ -207,6 +236,40 @@ public class Attributes : MonoBehaviour
                 AbleCheck = (int L)=>
                 {
                     if(L==1)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Thorns)return true;
+                    else return false;//别的流派
+                }
+            },
+            new Ability {
+                abilityName = "互相伤害",
+                description = "子弹命中敌人时会创建你与敌人之间的链接（每人最多一条），每帧使敌我同时受到一定伤害(不计算额外反伤)",
+                unlockAction = (int L) => {
+                    if(L==1)
+                    {
+                        AbilityThornsHurtEachOther=1;
+                        AbilityThornsHurtEachOtherRange=3f;
+                        AbilityThornsHurtEachOtherDamage=0.02f;//一秒六十帧，则一秒1.2伤害
+                    }
+                    else if(L==2)
+                    {
+                        AbilityThornsHurtEachOtherRange=4f;
+                        AbilityThornsHurtEachOtherDamage=0.03f;
+                    }
+                    else if(L==3)
+                    {
+                        AbilityThornsHurtEachOtherRange=5f;
+                        AbilityThornsHurtEachOtherDamage=0.04f;
+                    }
+                    else if(L==4)
+                    {
+                        AbilityThornsHurtEachOtherRange=6f;
+                        AbilityThornsHurtEachOtherDamage=0.05f;
+                    }
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==4)return false;//到达最大等级
                     if(MyStyle==(int)AbilityStyle.Thorns)return true;
                     else return false;//别的流派
                 }

@@ -7,9 +7,10 @@ public class EverythingPool : MonoBehaviour
     public GameObject ItemPrefab;
     public int PoolSize;
     private Queue<GameObject> availableItem = new Queue<GameObject>();
-
+    Vector3 StartScale;
     void Start()
     {
+        StartScale = ItemPrefab.transform.localScale;
         // 预先创建子弹并放入池中
         for (int i = 0; i < PoolSize; i++)
         {
@@ -41,6 +42,7 @@ public class EverythingPool : MonoBehaviour
     {
         Item.transform.parent = null;
         Item.SetActive(false);
+        Item.transform.localScale = StartScale; //防止无限缩放
         availableItem.Enqueue(Item);
     }
 }
