@@ -11,6 +11,7 @@ public class AbilityButton : MonoBehaviour, IPointerEnterHandler,IPointerExitHan
     // Start is called before the first frame update
     public TextMeshProUGUI TextDescription;
     public TextMeshProUGUI TextName;
+    public TextMeshProUGUI LevelOfAbility;//能力等级
     //private int IsHovering=0;
     private Ability Ability;
     private Action HideButton;
@@ -19,6 +20,7 @@ public class AbilityButton : MonoBehaviour, IPointerEnterHandler,IPointerExitHan
         Ability = ability; 
         TextDescription.text=ability.description;
         TextName.text = ability.abilityName;
+        LevelOfAbility.text ="lv:"+ ability.AbilityLevel.ToString();
         HideButton = hidebutton;
         TextDescription.gameObject.SetActive(false);
     }

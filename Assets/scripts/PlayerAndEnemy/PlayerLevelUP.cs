@@ -19,6 +19,7 @@ public class PlayerLevelUP : MonoBehaviour
     private int IsAbility = 0;//表示当前已经有abilitybutton
     //private int IsAttributeEnhance = 0;//表示当前已经有属性升级按钮显示
     public TextMeshProUGUI MyLV;//显示等级的文字
+
     // Start is called before the first frame update
     void Start()
     {
@@ -76,12 +77,14 @@ public class PlayerLevelUP : MonoBehaviour
     {
         Attributes.AttackPowerLV += 1;
         Attributes.AttackPower = 1f + 2.5f * Mathf.Pow(Attributes.AttackPowerLV, 0.6f);
+        Attributes.AttackPower *= Attributes.AbilitySniperAttackEnhance;//狙击流增伤
         HideButton();
     }
     public void AttackRangeUp()
     {
         Attributes.AttackRangeLV += 1;
         Attributes.AttackRange = 5f + 0.3f * Mathf.Pow(Attributes.AttackRangeLV, 0.3f);
+        Attributes.AttackRange *= Attributes.AbilitySniperRangeEnhance;//狙击流增加范围
         HideButton();
     }
     public void MoveSpeedUp()
@@ -91,11 +94,20 @@ public class PlayerLevelUP : MonoBehaviour
             Debug.Log("已经到达最大上限");//升级前检测是否还能升级
             return;
         }
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Sniper && Attributes.MoveSpeed >= Attributes.AbilitySniperMaxMoveSpeed)
+        {
+            Debug.Log("已经到达最大上限");//升级前检测是否还能升级
+            return;
+        }
         Attributes.MoveSpeedLV += 1;//每升一级可以获得的提升(对数函数)
-        Attributes.MoveSpeed = 1f + 0.8f * Mathf.Log(Attributes.MoveSpeedLV + 1);
+        Attributes.MoveSpeed = 2f + 0.8f * Mathf.Log(Attributes.MoveSpeedLV + 1);
         if (Attributes.MyStyle==(int)Attributes.AbilityStyle.Thorns && Attributes.MoveSpeed > Attributes.AbilityThornsMaxMoveSpeed)
         {
             Attributes.MoveSpeed = Attributes.AbilityThornsMaxMoveSpeed;//反伤流的限制
+        }
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Sniper && Attributes.MoveSpeed > Attributes.AbilitySniperMaxMoveSpeed)
+        {
+            Attributes.MoveSpeed = Attributes.AbilitySniperMaxMoveSpeed;//狙击流的限制
         }
         HideButton();
     }

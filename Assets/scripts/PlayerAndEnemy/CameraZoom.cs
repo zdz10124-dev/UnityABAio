@@ -6,7 +6,7 @@ using static AllControl;
 public class CameraZoom : MonoBehaviour
 {
     public float minSize = 2f;
-    public float maxSize = 10f;
+    public float maxSize = 7f;
     public float zoomSpeed = 2f;
     private Camera mainCamera;
     // Start is called before the first frame update

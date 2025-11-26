@@ -15,7 +15,7 @@ public class Attributes : MonoBehaviour
 {
     public int IsPlayer = 0;
 
-    public float MoveSpeed = 1f;
+    public float MoveSpeed = 2f;
     //关于角色相关的东西在inspector里改是没有用的
 
 
@@ -58,6 +58,7 @@ public class Attributes : MonoBehaviour
     };
     public List<int> AbilityLevel =new List<int> {0};
     //具体能力的数据
+    //反伤流
     public float AbilityThornsMaxMoveSpeed = 2f;//反伤流限制的最大速度
     public float AbilityThornsHedgehog=0;//刺猬的反伤比例
     public float AbilityThornsSheild = 1;//能力：盾 的防御力倍率
@@ -67,7 +68,10 @@ public class Attributes : MonoBehaviour
     public float AbilityThornsHurtEachOtherDamage = 0;//线的帧伤
     public List<GameObject> DamageLines;
     public List<Attributes> LiningPlayers;
-
+    //狙击流
+    public float AbilitySniperMaxMoveSpeed = 2f;//狙击流限制的最大速度
+    public float AbilitySniperAttackEnhance = 1f;//狙击的增伤比例
+    public float AbilitySniperRangeEnhance = 1f;//狙击的更广攻击距离
 
     //部分引用
     //死亡后界面相关
@@ -78,6 +82,8 @@ public class Attributes : MonoBehaviour
     private Rigidbody2D rb;
     //对象池
     public GameObject DamageLinePool;
+    //脚本
+    public PlayerLevelUP PlayerLevelUP;
     // Start is called before the first frame update
     public void Reset()//用于死后重置
     {
@@ -91,7 +97,7 @@ public class Attributes : MonoBehaviour
 
          Defense = 0f;
         //攻击相关
-        BulletSpeed = 10f;//子弹速度
+        BulletSpeed = 5f;//子弹速度
         AttackRange = 5f;//攻击距离
         AttackPower = 1f;//攻击力
         AttackTime = 20;//攻击间隔
@@ -114,7 +120,10 @@ public class Attributes : MonoBehaviour
         //一些ui需要更新
         gameObject.GetComponent<PlayerLevelUP>().UpdateLV();
         //重置特殊能力
+        //全体能力
+        MyStyle = -1;
         for (int i = 0; i < allAbilities.Count; i++) allAbilities[i].AbilityLevel = 0;
+        //反伤流
         AbilityThornsHedgehog = 0;
         AbilityThornsSheild = 1;
         AbilityThornsHoldGround = 1;
@@ -123,6 +132,11 @@ public class Attributes : MonoBehaviour
         AbilityThornsHurtEachOtherDamage = 0f;//线的帧伤
         DamageLines.Clear();
         LiningPlayers.Clear();
+        //狙击流
+        AbilitySniperAttackEnhance = 1f;//狙击的增伤比例
+        AbilitySniperRangeEnhance = 1f;//狙击的更广攻击距离
+        Camera.main.GetComponent<CameraZoom>().maxSize = GameManager.Instance.CameraMaxSize;
+
 }
     void Start()
     {
@@ -171,13 +185,16 @@ public class Attributes : MonoBehaviour
         {
             new Ability {
                 abilityName = "刺猬",
-                description = "可以在受到伤害时反弹部分伤害（用格挡前的伤害计算）",
+                description = "可以在受到伤害时反弹部分伤害（用格挡前的伤害计算），但速度受限，弹速降低",
   
                 unlockAction = (int L) => {
                     if(L==1)//初次调用进行初始化
                     {
                         MyStyle=(int)AbilityStyle.Thorns;
+                        MoveSpeedLV-=1;
+                        PlayerLevelUP.MoveSpeedUp();//刷新一下，以确定速度上限
                         BulletSpeed/=3;
+                        
                     }
                     if(L==1)AbilityThornsHedgehog=0.1f;//反弹的伤害比例
                     else if(L==2)AbilityThornsHedgehog=0.3f;
@@ -272,6 +289,83 @@ public class Attributes : MonoBehaviour
                     if(L==4)return false;//到达最大等级
                     if(MyStyle==(int)AbilityStyle.Thorns)return true;
                     else return false;//别的流派
+                },
+            },
+            //以下是狙击流
+            new Ability {
+                abilityName = "狙击",
+                description = "攻击范围、攻击力按比例提升。但速度受限,攻速降低",
+
+                unlockAction = (int L) => {
+                    AttackPowerLV-=1;
+                    PlayerLevelUP.AttackPowerUp();
+                    AttackRangeLV-=1;
+                    PlayerLevelUP.AttackRangeUp();//刷新一下，更新增伤与增距
+                    if(L==1)//初次调用进行初始化
+                    {
+                        MoveSpeedLV-=1;
+                        PlayerLevelUP.MoveSpeedUp();//刷新一下，以确定速度上限
+                        MyStyle=(int)AbilityStyle.Sniper;
+                    }
+                    if(L==1)
+                    {
+                        AbilitySniperRangeEnhance=1.3f;
+                        AbilitySniperAttackEnhance=1.3f;
+                        AttackTime=30;
+
+                    }
+                    else if(L==2)
+                    {
+                        AbilitySniperRangeEnhance=1.6f;
+                        AbilitySniperAttackEnhance=1.6f;
+                        AttackTime=60;
+                    }
+                    else if(L==3){ AbilitySniperRangeEnhance = 1.9f; AbilitySniperAttackEnhance = 1.9f;AttackTime=100; }
+                    else if(L==4){ AbilitySniperRangeEnhance = 2.2f; AbilitySniperAttackEnhance = 2.2f;AttackTime=140; }
+                    else if(L==5){ AbilitySniperRangeEnhance = 2.5f; AbilitySniperAttackEnhance = 2.5f;AttackTime=180; }
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==-1 || MyStyle==(int)AbilityStyle.Sniper)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "高速子弹",
+                description = "提升子弹速度",
+
+                unlockAction = (int L) => {
+                    if (L == 1) BulletSpeed = 8f;
+                    else if (L == 2) BulletSpeed = 12f;
+                    else if (L == 3) BulletSpeed = 16f;
+                    else if (L == 4) BulletSpeed = 20f;
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==4)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Sniper)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "鹰眼",
+                description = "获得更大的视野",
+
+                unlockAction = (int L) => {
+                    if (L == 1) Camera.main.GetComponent<CameraZoom>().maxSize=8f;
+                    else if (L == 2) Camera.main.GetComponent<CameraZoom>().maxSize=9f;
+                    else if (L == 3) Camera.main.GetComponent<CameraZoom>().maxSize=10f;
+                    else if (L == 4) Camera.main.GetComponent<CameraZoom>().maxSize=11f;
+                    else if (L == 5) Camera.main.GetComponent<CameraZoom>().maxSize=12f;
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Sniper)return true;
+                    else return false;//已经有了别的流派
                 }
             }
             // 其他能力...
