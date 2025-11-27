@@ -6,9 +6,10 @@ public class BulletPool : MonoBehaviour
 {
     public GameObject bulletPrefab;
     private Queue<GameObject> availableBullets = new Queue<GameObject>();
-
+    Vector3 StartScale;
     void Start()
     {
+        StartScale = bulletPrefab.transform.localScale;
         // 预先创建子弹并放入池中
         for (int i = 0; i < GameManager.Instance.BulletPoolSize; i++)
         {
@@ -38,7 +39,9 @@ public class BulletPool : MonoBehaviour
 
     public void ReturnBullet(GameObject bullet)//回收子弹
     {
+        bullet.transform.parent = null;
         bullet.SetActive(false);
         availableBullets.Enqueue(bullet);
+        bullet.transform.localScale = StartScale; //防止无限缩放
     }
 }

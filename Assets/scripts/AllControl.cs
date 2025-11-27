@@ -30,7 +30,8 @@ public class AllControl : MonoBehaviour
         public int AbilityButtonBias = 300;//设置一下偏移方便居中
         //刷新率
         public int MaxFPS = 60;//最大帧率
-
+        //UI
+        public float DamageDisplayYUP = 0.5f;//伤害数值显示在角色上方多少
         //水果
         public float XPperCherry = 10f;//一个樱桃多少经验
         public float CherrySpawnMaxTime = 10f;//生成樱桃需要的时间 最大值

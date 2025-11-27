@@ -77,7 +77,7 @@ public class EnemyAI : MonoBehaviour
                     Fruit = coll;
                     state = 1;
                 }
-                if (coll.CompareTag("Player"))//从漫步到追人
+                if (coll.CompareTag("Player") && !coll.gameObject.GetComponent<Attributes>().Hide)//从漫步到追人 前提是人没有躲草
                 {
                     Player = coll;
                     state = 2;
@@ -126,7 +126,7 @@ public class EnemyAI : MonoBehaviour
                 }
             if (coll != null)
             {
-                if (coll.CompareTag("Player"))//从干饭到追人
+                if (coll.CompareTag("Player") && !coll.gameObject.GetComponent<Attributes>().Hide)//从干饭到追人
                 {
                     Player = coll;
                     state = 2;

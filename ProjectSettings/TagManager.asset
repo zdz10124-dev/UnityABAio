@@ -7,6 +7,7 @@ TagManager:
   - fruit
   - enemy
   - rock
+  - cover
   layers:
   - Default
   - TransparentFX

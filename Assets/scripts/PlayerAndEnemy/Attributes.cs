@@ -39,6 +39,8 @@ public class Attributes : MonoBehaviour
     public int DefenseLV = 0;
     public int AttackPowerLV = 0;
     public int AttackRangeLV = 0;
+    //状态
+    public bool Hide=false;//检测是否躲草
     //机器人
     public float VisionRange = 5f;//类似半径，这里设置的是一半的，方便与射程对比
     public float ExtraChaseRange = 2;//在视野外额外追击的距离
@@ -72,6 +74,8 @@ public class Attributes : MonoBehaviour
     public float AbilitySniperMaxMoveSpeed = 2f;//狙击流限制的最大速度
     public float AbilitySniperAttackEnhance = 1f;//狙击的增伤比例
     public float AbilitySniperRangeEnhance = 1f;//狙击的更广攻击距离
+    public float AbilitySniperSmallerBulletScale = 1f;//子弹变小的比例
+    public float AbilitySniperArmorPierce = 0f;//穿甲比例
 
     //部分引用
     //死亡后界面相关
@@ -84,6 +88,7 @@ public class Attributes : MonoBehaviour
     public GameObject DamageLinePool;
     //脚本
     public PlayerLevelUP PlayerLevelUP;
+    public OthersUI OthersUI;
     // Start is called before the first frame update
     public void Reset()//用于死后重置
     {
@@ -136,13 +141,16 @@ public class Attributes : MonoBehaviour
         AbilitySniperAttackEnhance = 1f;//狙击的增伤比例
         AbilitySniperRangeEnhance = 1f;//狙击的更广攻击距离
         Camera.main.GetComponent<CameraZoom>().maxSize = GameManager.Instance.CameraMaxSize;
+        AbilitySniperSmallerBulletScale = 1f;//子弹变小的比例
+        AbilitySniperArmorPierce = 0f;//穿甲比例
 
-}
+    }
     void Start()
     {
         //Reset();
         InitializeAbilities(); // 初始化能力列表
         rb = gameObject.GetComponent<Rigidbody2D>();
+        OthersUI = gameObject.GetComponent<OthersUI>();
     }
 
     // Update is called once per frame
@@ -173,11 +181,13 @@ public class Attributes : MonoBehaviour
      }
     public void GetDamage(Attributes EnemyAttributes,float damage,bool ReflectDamage=true)
     {
+        float hp0 = hp;//用来计算实际伤害
         gameObject.GetComponent<PlayerLife>().LastAttacker = EnemyAttributes;
-        if (!CheckStatic()) hp -= (damage * 2 / (Defense + 2));//扣血公式：乘以（2/防御力+2)
-        else hp -= (damage * 2 / (Defense*AbilityThornsHoldGround + 2));//如果静止，乘以系数
+        if (!CheckStatic()) hp -= (damage * 2 / (Defense*(1-EnemyAttributes.AbilitySniperArmorPierce) + 2));//扣血公式：乘以（2/防御力+2)
+        else hp -= (damage * 2 / (Defense*AbilityThornsHoldGround * (1 - EnemyAttributes.AbilitySniperArmorPierce) + 2));//如果静止，乘以系数
         Debug.LogFormat("当前反伤比例是{0},isplayer是{1}\n", AbilityThornsHedgehog, IsPlayer);
         if(AbilityThornsHedgehog>0 && ReflectDamage)EnemyAttributes.GetDamage(this, damage*AbilityThornsHedgehog,false);//反弹伤害 且不反弹反伤的反伤
+        OthersUI.DamageDisplay(hp0 - hp);//显示伤害数字
     }
     void InitializeAbilities()
     {
@@ -191,6 +201,7 @@ public class Attributes : MonoBehaviour
                     if(L==1)//初次调用进行初始化
                     {
                         MyStyle=(int)AbilityStyle.Thorns;
+                        PlayerLevelUP.WaitQueue++;
                         MoveSpeedLV-=1;
                         PlayerLevelUP.MoveSpeedUp();//刷新一下，以确定速度上限
                         BulletSpeed/=3;
@@ -297,12 +308,9 @@ public class Attributes : MonoBehaviour
                 description = "攻击范围、攻击力按比例提升。但速度受限,攻速降低",
 
                 unlockAction = (int L) => {
-                    AttackPowerLV-=1;
-                    PlayerLevelUP.AttackPowerUp();
-                    AttackRangeLV-=1;
-                    PlayerLevelUP.AttackRangeUp();//刷新一下，更新增伤与增距
                     if(L==1)//初次调用进行初始化
                     {
+                        PlayerLevelUP.WaitQueue++;
                         MoveSpeedLV-=1;
                         PlayerLevelUP.MoveSpeedUp();//刷新一下，以确定速度上限
                         MyStyle=(int)AbilityStyle.Sniper;
@@ -323,6 +331,12 @@ public class Attributes : MonoBehaviour
                     else if(L==3){ AbilitySniperRangeEnhance = 1.9f; AbilitySniperAttackEnhance = 1.9f;AttackTime=100; }
                     else if(L==4){ AbilitySniperRangeEnhance = 2.2f; AbilitySniperAttackEnhance = 2.2f;AttackTime=140; }
                     else if(L==5){ AbilitySniperRangeEnhance = 2.5f; AbilitySniperAttackEnhance = 2.5f;AttackTime=180; }
+                    PlayerLevelUP.WaitQueue++;
+                    AttackPowerLV-=1;
+                    PlayerLevelUP.AttackPowerUp();
+                    PlayerLevelUP.WaitQueue++;
+                    AttackRangeLV-=1;
+                    PlayerLevelUP.AttackRangeUp();//刷新一下，更新增伤与增距
 
                 },
                 AbleCheck = (int L)=>
@@ -359,6 +373,42 @@ public class Attributes : MonoBehaviour
                     else if (L == 3) Camera.main.GetComponent<CameraZoom>().maxSize=10f;
                     else if (L == 4) Camera.main.GetComponent<CameraZoom>().maxSize=11f;
                     else if (L == 5) Camera.main.GetComponent<CameraZoom>().maxSize=12f;
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Sniper)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "小号子弹",
+                description = "子弹更小更难被发现",
+
+                unlockAction = (int L) => {
+                    if (L == 1)AbilitySniperSmallerBulletScale=1.5f;
+                    else if (L == 2) AbilitySniperSmallerBulletScale=2f;
+                    else if (L == 3)AbilitySniperSmallerBulletScale=2.5f;
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==3)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Sniper)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "破甲子弹",
+                description = "敌人的防御力结算时更低",
+
+                unlockAction = (int L) => {
+                    if (L == 1)AbilitySniperArmorPierce=0.1f;
+                    else if (L == 2) AbilitySniperArmorPierce=0.2f;
+                    else if (L == 3)AbilitySniperArmorPierce=0.3f;
+                    else if (L == 4)AbilitySniperArmorPierce=0.4f;
+                    else if (L == 5)AbilitySniperArmorPierce=0.5f;
 
                 },
                 AbleCheck = (int L)=>

@@ -16,6 +16,7 @@ public class Bullet : MonoBehaviour
         Attributes= myAttributes;
         dir = direction;
         InitialPos=Attributes.gameObject.GetComponent<Rigidbody2D>().transform.position;//获取当前角色坐标
+        gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x/myAttributes.AbilitySniperSmallerBulletScale, gameObject.transform.localScale.y / myAttributes.AbilitySniperSmallerBulletScale, gameObject.transform.localScale.z / myAttributes.AbilitySniperSmallerBulletScale);//狙击手子弹变小的天赋
         //Debug.Log("老子没给你定义吗你啊？");
         rb=GetComponent<Rigidbody2D>();
     }
