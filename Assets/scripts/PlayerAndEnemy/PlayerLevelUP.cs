@@ -15,7 +15,8 @@ public class PlayerLevelUP : MonoBehaviour
     public Button[] buttons;
     public Button AbilityButton;
     private List<Button> AbilityButtonList=new List<Button>();
-    public int WaitQueue = 0;
+    public int WaitQueue = 0;//掌管数值
+    public int WaitQueue2 = 0;//掌管能力
     private int IsAbility = 0;//表示当前已经有abilitybutton
     //private int IsAttributeEnhance = 0;//表示当前已经有属性升级按钮显示
     public TextMeshProUGUI MyLV;//显示等级的文字
@@ -43,11 +44,11 @@ public class PlayerLevelUP : MonoBehaviour
             UpdateLV();//更新显示lv
             //Debug.Log("我升级了");
             WaitQueue++;//可以多次积累，防止因为长时间不选而跳过
-            
+            if(Attributes.level% AllControl.GameManager.Instance.LevelsPerAbility==0) WaitQueue2++;//每隔几级有一个能力
         }
         if (Attributes.IsPlayer != 0 && WaitQueue > 0) AttributeEnhancement();
         if (Attributes.IsPlayer == 0 && WaitQueue > 0) RobotAttributeEnhancement();//让敌人也能成长
-        if (Attributes.IsPlayer!=0 && WaitQueue>0 && (Attributes.level-WaitQueue+1)%AllControl.GameManager.Instance.LevelsPerAbility==0 && IsAbility==0) GetAbility();
+        if (Attributes.IsPlayer!=0 && WaitQueue2>0 && IsAbility==0) GetAbility();
     }
     void RobotAttributeEnhancement()
     {
@@ -178,6 +179,7 @@ public class PlayerLevelUP : MonoBehaviour
             AbilityButtonList[i].gameObject.SetActive(false);
         }
         IsAbility = 0;
+        WaitQueue2--;
 
     }
 }

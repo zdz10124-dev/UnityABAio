@@ -41,7 +41,8 @@ public class BulletPool : MonoBehaviour
     {
         bullet.transform.parent = null;
         bullet.SetActive(false);
-        availableBullets.Enqueue(bullet);
         bullet.transform.localScale = StartScale; //∑¿÷πŒﬁœﬁÀı∑≈
+        availableBullets.Enqueue(bullet);
+        
     }
 }
