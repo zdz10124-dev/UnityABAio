@@ -27,7 +27,7 @@ public class Attributes : MonoBehaviour
     public float BulletSpeed = 5f;//子弹速度
     public float AttackRange = 5f;//攻击距离
     public float AttackPower = 1f;//攻击力
-    public int AttackTime = 20;//攻击间隔
+    public int AttackTime = 60;//攻击间隔
     //升级相关
     public float xp = 0f;
     public float TotalXP= 0f;
@@ -76,6 +76,12 @@ public class Attributes : MonoBehaviour
     public float AbilitySniperRangeEnhance = 1f;//狙击的更广攻击距离
     public float AbilitySniperSmallerBulletScale = 1f;//子弹变小的比例
     public float AbilitySniperArmorPierce = 0f;//穿甲比例
+    //火力流
+    public float AbilityFirePowerMaxAttackRange = 5f;//火力流限制的最大攻击范围
+    public int AbilityFirePowerBulletCount = 1;//单次射出的子弹数目
+    public float AbilityFirePowerScatteringAngle = 20f;//散射时左右的角度
+    public float AbilityFirePowerBiggerBulletScale = 1f;//子弹变大的比例
+
 
     //部分引用
     //死亡后界面相关
@@ -105,7 +111,7 @@ public class Attributes : MonoBehaviour
         BulletSpeed = 5f;//子弹速度
         AttackRange = 5f;//攻击距离
         AttackPower = 1f;//攻击力
-        AttackTime = 20;//攻击间隔
+        AttackTime = 60;//攻击间隔
         //升级相关
         xp = 0f;
         TotalXP = 0f;
@@ -143,7 +149,9 @@ public class Attributes : MonoBehaviour
         Camera.main.GetComponent<CameraZoom>().maxSize = GameManager.Instance.CameraMaxSize;
         AbilitySniperSmallerBulletScale = 1f;//子弹变小的比例
         AbilitySniperArmorPierce = 0f;//穿甲比例
-
+        //火力流
+        AbilityFirePowerBulletCount = 1;
+        AbilityFirePowerScatteringAngle = 20f;
     }
     void Start()
     {
@@ -417,7 +425,67 @@ public class Attributes : MonoBehaviour
                     if(MyStyle==(int)AbilityStyle.Sniper)return true;
                     else return false;//已经有了别的流派
                 }
+            },
+            //以下是火力流
+            new Ability {
+                abilityName = "霰弹",
+                description = "射出更多子弹",
+
+                unlockAction = (int L) => {
+                    if(L==1)
+                    {
+                        MyStyle = (int)AbilityStyle.FirePower;
+                    }
+                    if(L==1)AbilityFirePowerBulletCount=2;//射出子弹数量
+                    else if(L==2)AbilityFirePowerBulletCount=3;
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==2)return false;//到达最大等级
+                    if(MyStyle==-1 || MyStyle==(int)AbilityStyle.FirePower)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "快速射击",
+                description = "加快射击速度",
+
+                unlockAction = (int L) => {//原CD是60
+                    if(L==1)AttackTime=50;
+                    else if(L==2)AttackTime=42;
+                    else if(L==3)AttackTime=35;
+                    else if(L==4)AttackTime=29;
+                    else if(L==5)AttackTime=24;
+
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.FirePower)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "大号子弹",
+                description = "使子弹变大",
+
+                unlockAction = (int L) => {
+                    if(L==1)AbilityFirePowerBiggerBulletScale=1.5f;//子弹放大的比例
+                    else if(L==2)AbilityFirePowerBiggerBulletScale=2f;
+                    else if(L==3)AbilityFirePowerBiggerBulletScale=2.5f;
+
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==3)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.FirePower)return true;
+                    else return false;//已经有了别的流派
+                }
             }
+
             // 其他能力...
         };
     }

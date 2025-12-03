@@ -31,7 +31,12 @@ public class PlayerLife : MonoBehaviour
         {
             LastAttacker.xp += Attributes.TotalXP * GameManager.Instance.LootXPRate + GameManager.Instance.BasicLootXP;
         }
-        if (Attributes.IsPlayer==0)transform.parent.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<EverythingPool>().ReturnItem(transform.parent.gameObject);
+        if (Attributes.IsPlayer == 0)
+        { 
+            //transform.parent.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<EverythingPool>().ReturnItem(transform.parent.gameObject);
+            transform.position = Vector3.one;//临时写的，可以一直爽
+            Attributes.hp = Attributes.MaxHP;//这样怪物一直重生我可以一直杀杀杀
+        } 
         else
         {
             Attributes.GameOver.gameObject.SetActive(true);//出现游戏结束的按钮

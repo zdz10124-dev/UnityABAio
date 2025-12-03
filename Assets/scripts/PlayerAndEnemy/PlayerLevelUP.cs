@@ -47,7 +47,7 @@ public class PlayerLevelUP : MonoBehaviour
         }
         if (Attributes.IsPlayer != 0 && WaitQueue > 0) AttributeEnhancement();
         if (Attributes.IsPlayer == 0 && WaitQueue > 0) RobotAttributeEnhancement();//让敌人也能成长
-        if (Attributes.IsPlayer!=0 && WaitQueue>0 && (Attributes.level-WaitQueue+1)%2==0 && IsAbility==0) GetAbility();
+        if (Attributes.IsPlayer!=0 && WaitQueue>0 && (Attributes.level-WaitQueue+1)%AllControl.GameManager.Instance.LevelsPerAbility==0 && IsAbility==0) GetAbility();
     }
     void RobotAttributeEnhancement()
     {
@@ -82,21 +82,33 @@ public class PlayerLevelUP : MonoBehaviour
     }
     public void AttackRangeUp()
     {
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.FirePower && Attributes.AttackRange >= Attributes.AbilityFirePowerMaxAttackRange)
+        {
+            Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("攻击范围已经到达最大上限");
+            Debug.Log("已经到达最大上限");//升级前检测是否还能升级 火力流限制范围
+            return;
+        }
         Attributes.AttackRangeLV += 1;
         Attributes.AttackRange = 5f + 0.3f * Mathf.Pow(Attributes.AttackRangeLV, 0.3f);
         Attributes.AttackRange *= Attributes.AbilitySniperRangeEnhance;//狙击流增加范围
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.FirePower && Attributes.AttackRange >= Attributes.AbilityFirePowerMaxAttackRange)
+        {
+            Attributes.AttackRange = Attributes.AbilityFirePowerMaxAttackRange;
+        }
         HideButton();
     }
     public void MoveSpeedUp()
     {
         if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Thorns && Attributes.MoveSpeed >= Attributes.AbilityThornsMaxMoveSpeed)
         {
-            Debug.Log("已经到达最大上限");//升级前检测是否还能升级
+            Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("移速已经到达最大上限");
+            Debug.Log("已经到达最大上限");//升级前检测是否还能升级 反伤流限制移速
             return;
         }
         if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Sniper && Attributes.MoveSpeed >= Attributes.AbilitySniperMaxMoveSpeed)
         {
-            Debug.Log("已经到达最大上限");//升级前检测是否还能升级
+            Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("移速已经到达最大上限");
+            Debug.Log("已经到达最大上限");//升级前检测是否还能升级 狙击流限制移速
             return;
         }
         Attributes.MoveSpeedLV += 1;//每升一级可以获得的提升(对数函数)
@@ -142,7 +154,6 @@ public class PlayerLevelUP : MonoBehaviour
     }
     void GetAbility()
     {
-        WaitQueue--;
         List<Ability> selected = GetRandomAbilities(Attributes.AbilityPerLevel);
         for (int i = 0; i < selected.Count; i++)
         {

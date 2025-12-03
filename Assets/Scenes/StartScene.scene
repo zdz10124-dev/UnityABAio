@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -841,7 +841,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -7, y: 5}
+  m_AnchoredPosition: {x: -7, y: 40}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &932903891
@@ -1089,8 +1089,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u9000\u51FA\u6E38\u620F"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7f7326c1747704647833179772821cb0, type: 2}
-  m_sharedMaterial: {fileID: -4791668383183531164, guid: 7f7326c1747704647833179772821cb0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69e50bd7b4b558743952f0bf7641ece6, type: 2}
+  m_sharedMaterial: {fileID: 809222674079937368, guid: 69e50bd7b4b558743952f0bf7641ece6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1267,8 +1267,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u5F00\u59CB\u6E38\u620F"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7f7326c1747704647833179772821cb0, type: 2}
-  m_sharedMaterial: {fileID: -4791668383183531164, guid: 7f7326c1747704647833179772821cb0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69e50bd7b4b558743952f0bf7641ece6, type: 2}
+  m_sharedMaterial: {fileID: 809222674079937368, guid: 69e50bd7b4b558743952f0bf7641ece6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1380,7 +1380,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -7, y: -148}
+  m_AnchoredPosition: {x: -7, y: -113}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1844735946
@@ -1950,6 +1950,7 @@ MonoBehaviour:
   AttackPower: 1
   AttackTime: 60
   xp: 0
+  TotalXP: 0
   NextLevelXP: 5
   level: 1
   AbilityPerLevel: 3
@@ -1957,10 +1958,33 @@ MonoBehaviour:
   DefenseLV: 0
   AttackPowerLV: 0
   AttackRangeLV: 0
+  Hide: 0
   VisionRange: 5
   ExtraChaseRange: 2
   ExtraFleeRange: 8
   FleeHPPersent: 0.2
+  MyStyle: -1
+  AbilityLevel: 00000000
+  AbilityThornsMaxMoveSpeed: 2
+  AbilityThornsHedgehog: 0
+  AbilityThornsSheild: 1
+  AbilityThornsHoldGround: 1
+  AbilityThornsHurtEachOther: 0
+  AbilityThornsHurtEachOtherRange: 0
+  AbilityThornsHurtEachOtherDamage: 0
+  DamageLines: []
+  LiningPlayers: []
+  AbilitySniperMaxMoveSpeed: 2
+  AbilitySniperAttackEnhance: 1
+  AbilitySniperRangeEnhance: 1
+  AbilitySniperSmallerBulletScale: 1
+  AbilitySniperArmorPierce: 0
+  GameOver: {fileID: 0}
+  TempCamera: {fileID: 0}
+  InGameCanvas: {fileID: 0}
+  DamageLinePool: {fileID: 0}
+  PlayerLevelUP: {fileID: 0}
+  OthersUI: {fileID: 0}
 --- !u!4 &3408810030010112764
 Transform:
   m_ObjectHideFlags: 0
@@ -2001,6 +2025,8 @@ MonoBehaviour:
   Canvas: {fileID: 0}
   buttons: []
   AbilityButton: {fileID: 0}
+  WaitQueue: 0
+  MyLV: {fileID: 0}
 --- !u!224 &3795984136537759260
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2109,6 +2135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LifeBar: {fileID: 5790234504452129840}
+  DamageDisplayUI: {fileID: 0}
 --- !u!114 &4526496260044685659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2198,6 +2225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 437266f0661d63241bd7b0c6c1e033f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LastAttacker: {fileID: 0}
 --- !u!1 &5028832121970750470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2647,6 +2675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XPbar: {fileID: 0}
+  TipUI: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

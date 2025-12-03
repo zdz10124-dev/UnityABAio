@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using TuanjieMuse.Chat.View;
+
 using UnityEngine;
 
 public class GenerateEnemy1 : MonoBehaviour,IBuildings

@@ -33,11 +33,13 @@ public class AllControl : MonoBehaviour
         //UI
         public float DamageDisplayYUP = 0.5f;//伤害数值显示在角色上方多少
         //水果
-        public float XPperCherry = 10f;//一个樱桃多少经验
+        public float XPperCherry = 1f;//一个樱桃多少经验
         public float CherrySpawnMaxTime = 10f;//生成樱桃需要的时间 最大值
         public float CherrySpawnMinTime = 1f;//最小值
         public float CherryHPUp = 1f;//一个樱桃回的血
         public float GrowthRate = 1.1f;//下一级比上一级所需经验的比例
+        //升级
+        public int LevelsPerAbility = 1;//升多少级能获得一个能力
         //击杀所得
         public float BasicLootXP = 10f;//杀死敌人的基础获得经验值
         public float LootXPRate = 0.5f;//杀死敌人时掠夺的经验值
