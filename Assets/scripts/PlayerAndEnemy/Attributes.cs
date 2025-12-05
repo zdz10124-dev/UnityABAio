@@ -81,7 +81,9 @@ public class Attributes : MonoBehaviour
     public int AbilityFirePowerBulletCount = 1;//单次射出的子弹数目
     public float AbilityFirePowerScatteringAngle = 20f;//散射时左右的角度
     public float AbilityFirePowerBiggerBulletScale = 1f;//子弹变大的比例
-
+    public float AbilityFirePowerTrackRange = 0f;//追踪范围
+    public float AbilityFirePowerExplodeRange = 0f;//爆炸范围
+    public float AbilityFirePowerExplodeDamageRate = 0f;//爆炸伤害：是攻击力乘以一个百分比
 
     //部分引用
     //死亡后界面相关
@@ -152,18 +154,25 @@ public class Attributes : MonoBehaviour
         //火力流
         AbilityFirePowerBulletCount = 1;
         AbilityFirePowerScatteringAngle = 20f;
+        AbilityFirePowerTrackRange = 0f;//追踪范围
+        AbilityFirePowerExplodeRange = 0f;//爆炸范围
+        AbilityFirePowerExplodeDamageRate = 0f;//爆炸伤害：是攻击力乘以一个百分比
+    }
+    private void Awake()
+    {
+        InitializeAbilities(); // 初始化能力列表
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        OthersUI = gameObject.GetComponent<OthersUI>();        
     }
     void Start()
     {
         //Reset();
-        InitializeAbilities(); // 初始化能力列表
-        rb = gameObject.GetComponent<Rigidbody2D>();
-        OthersUI = gameObject.GetComponent<OthersUI>();
+
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {   
         BeDamaedByLine();
     }
     void BeDamaedByLine()
@@ -193,7 +202,7 @@ public class Attributes : MonoBehaviour
         gameObject.GetComponent<PlayerLife>().LastAttacker = EnemyAttributes;
         if (!CheckStatic()) hp -= (damage * 2 / (Defense*(1-EnemyAttributes.AbilitySniperArmorPierce) + 2));//扣血公式：乘以（2/防御力+2)
         else hp -= (damage * 2 / (Defense*AbilityThornsHoldGround * (1 - EnemyAttributes.AbilitySniperArmorPierce) + 2));//如果静止，乘以系数
-        Debug.LogFormat("当前反伤比例是{0},isplayer是{1}\n", AbilityThornsHedgehog, IsPlayer);
+        //Debug.LogFormat("当前反伤比例是{0},isplayer是{1}\n", AbilityThornsHedgehog, IsPlayer);
         if(AbilityThornsHedgehog>0 && ReflectDamage)EnemyAttributes.GetDamage(this, damage*AbilityThornsHedgehog,false);//反弹伤害 且不反弹反伤的反伤
         OthersUI.DamageDisplay(hp0 - hp);//显示伤害数字
     }
@@ -481,6 +490,44 @@ public class Attributes : MonoBehaviour
                 AbleCheck = (int L)=>
                 {
                     if(L==3)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.FirePower)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "追踪子弹",
+                description = "使子弹追踪敌人",
+
+                unlockAction = (int L) => {
+                    if(L==1)AbilityFirePowerTrackRange=3f;//追踪范围
+                    else if(L==2)AbilityFirePowerTrackRange=4f;
+                    else if(L==3)AbilityFirePowerTrackRange=5f;
+
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==3)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.FirePower)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "爆炸子弹",
+                description = "使子弹追踪敌人",
+
+                unlockAction = (int L) => {
+                    if(L==1){AbilityFirePowerExplodeRange=2f; AbilityFirePowerExplodeDamageRate=0.3f; }//爆炸范围
+                    else if(L==2){AbilityFirePowerExplodeRange=4f; AbilityFirePowerExplodeDamageRate=0.3f; }
+                    else if(L==3){AbilityFirePowerExplodeRange=4f; AbilityFirePowerExplodeDamageRate=0.5f; }
+                    else if(L==4){AbilityFirePowerExplodeRange=4f; AbilityFirePowerExplodeDamageRate=0.7f; }
+                    else if(L==5){AbilityFirePowerExplodeRange=5f; AbilityFirePowerExplodeDamageRate=1f; }
+
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
                     if(MyStyle==(int)AbilityStyle.FirePower)return true;
                     else return false;//已经有了别的流派
                 }

@@ -26,19 +26,23 @@ public class AbilityButton : MonoBehaviour, IPointerEnterHandler,IPointerExitHan
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("悬停了\n");
+        //Debug.Log("悬停了\n");
         TextDescription.gameObject.SetActive(true);
         //IsHovering = 1;
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("走了\n");
+        //Debug.Log("走了\n");
         TextDescription.gameObject.SetActive(false);
         //IsHovering = 0;
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("我按了");
+        if(Ability==null)
+        {
+            Debug.Log("Ability不存在");
+            Debug.LogFormat("出现问题的对象名字是{0}", gameObject.name);
+        }
         Ability.AbilityLevel++;//能力等级+1
         Ability.unlockAction(Ability.AbilityLevel);
         HideButton();//选中一个能力就隐藏其他所有能力

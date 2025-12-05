@@ -139,6 +139,11 @@ public class PlayerLevelUP : MonoBehaviour
     }
     List<Ability> GetRandomAbilities(int count)
     {
+        //if (Attributes.allAbilities == null)
+        //{
+        //    Debug.Log("在获取能力时发现能力列表为空");
+        //    Debug.LogFormat("出现问题的对象名字是{0}", Attributes.gameObject.name);
+        //}
         // 获取所有未解锁的能力
         List<Ability> available = Attributes.allAbilities.FindAll(a => a.AbleCheck(a.AbilityLevel));
 

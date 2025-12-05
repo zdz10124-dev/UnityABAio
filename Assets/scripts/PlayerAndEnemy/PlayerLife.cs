@@ -48,7 +48,7 @@ public class PlayerLife : MonoBehaviour
                 gameObject.GetComponent<PlayerLevelUP>().HideAbilityButton();
                 gameObject.GetComponent<PlayerLevelUP>().HideButton();
                 gameObject.GetComponent<PlayerLevelUP>().WaitQueue = 0;
-                
+                gameObject.GetComponent<PlayerLevelUP>().WaitQueue2 = 0;
             }
 
             gameObject.SetActive(false);//½ûÓÃÎïÌå
