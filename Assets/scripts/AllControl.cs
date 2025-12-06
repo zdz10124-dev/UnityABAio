@@ -32,6 +32,7 @@ public class AllControl : MonoBehaviour
         public int MaxFPS = 60;//最大帧率
         //UI
         public float DamageDisplayYUP = 0.5f;//伤害数值显示在角色上方多少
+        public int DamaeDisplayCD = 10;//伤害显示的cd(也就是多长时间内的伤害会被累计显示)单位是帧
         //水果
         public float XPperCherry = 1f;//一个樱桃多少经验
         public float CherrySpawnMaxTime = 10f;//生成樱桃需要的时间 最大值

@@ -201,7 +201,7 @@ public class Attributes : MonoBehaviour
         if ((rb.velocity.x < GameManager.Instance.MinStep || rb.velocity.x > -GameManager.Instance.MinStep) && (rb.velocity.y < GameManager.Instance.MinStep || rb.velocity.y > -GameManager.Instance.MinStep)) return true;//x,y速度小于某一值判定为静止
         return false;
      }
-    public void GetDamage(Attributes EnemyAttributes,float damage,bool ReflectDamage=true)
+    public float GetDamage(Attributes EnemyAttributes,float damage,bool ReflectDamage=true)
     {
         float hp0 = hp;//用来计算实际伤害
         gameObject.GetComponent<PlayerLife>().LastAttacker = EnemyAttributes;
@@ -209,7 +209,8 @@ public class Attributes : MonoBehaviour
         else hp -= (damage * 2 / (Defense*AbilityThornsHoldGround * (1 - EnemyAttributes.AbilitySniperArmorPierce) + 2));//如果静止，乘以系数
         //Debug.LogFormat("当前反伤比例是{0},isplayer是{1}\n", AbilityThornsHedgehog, IsPlayer);
         if(AbilityThornsHedgehog>0 && ReflectDamage)EnemyAttributes.GetDamage(this, damage*AbilityThornsHedgehog,false);//反弹伤害 且不反弹反伤的反伤
-        OthersUI.DamageDisplay(hp0 - hp);//显示伤害数字
+        OthersUI.TotalDamage+=(hp0 - hp);//显示伤害数字
+        return hp0 - hp;//返回实际损失血量
     }
     void InitializeAbilities()
     {
