@@ -35,8 +35,8 @@ public class AllControl : MonoBehaviour
         public int DamaeDisplayCD = 10;//伤害显示的cd(也就是多长时间内的伤害会被累计显示)单位是帧
         //水果
         public float XPperCherry = 1f;//一个樱桃多少经验
-        public float CherrySpawnMaxTime = 10f;//生成樱桃需要的时间 最大值
-        public float CherrySpawnMinTime = 1f;//最小值
+        public float CherrySpawnMaxTime = 30f;//生成樱桃需要的时间 最大值
+        public float CherrySpawnMinTime = 7f;//最小值
         public float CherryHPUp = 1f;//一个樱桃回的血
         public float GrowthRate = 1.1f;//下一级比上一级所需经验的比例
         //升级

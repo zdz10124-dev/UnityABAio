@@ -33,7 +33,7 @@ public class OthersUI : MonoBehaviour
         if (DamaeDisplayCD > 0) DamaeDisplayCD--;//进行内置伤害显示时间读条
         if (DamaeDisplayCD == 0 && TotalDamage>0)
         {
-            Debug.LogFormat("TotalDamage={0}", TotalDamage);
+            //Debug.LogFormat("TotalDamage={0}", TotalDamage);
             DamageDisplay(TotalDamage);
             DamaeDisplayCD = GameManager.Instance.DamaeDisplayCD;
             TotalDamage = 0f;

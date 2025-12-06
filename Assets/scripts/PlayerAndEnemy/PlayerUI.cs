@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +10,7 @@ public class PlayerUI : MonoBehaviour
     private const float XPbarXscale=14.06739f;
     [SerializeField] public Image XPbar;
     public TextMeshProUGUI TipUI;
+    public Image EnhancedAttackPicture;//«ø∆’±Í÷æ
     // Start is called before the first frame update
     void Start()
     {

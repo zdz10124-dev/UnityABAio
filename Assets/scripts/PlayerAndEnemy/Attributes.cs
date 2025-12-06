@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static AllControl;
 
 public class Ability
@@ -31,7 +32,7 @@ public class Attributes : MonoBehaviour
     //升级相关
     public float xp = 0f;
     public float TotalXP= 0f;
-    public float NextLevelXP = 5;
+    public float NextLevelXP = 10;
     public float level = 0;
     public int AbilityPerLevel = 3;
 
@@ -87,6 +88,12 @@ public class Attributes : MonoBehaviour
     //刺客流
     public float AbilityAssassinMoveSpeedEnhance = 1f;//刺客的移速增幅
     public float AbilityAssassinBiggerKnife = 1f;//更大刀光
+    public float AbilityAssassinEnhancedAttackBiggerKnife = 1f;//强普刀光增幅
+    public float AbilityAssassinEnhancedAttackHigherDamage = 1f;//强普伤害增幅
+    public int AbilityAssassinEnhancedAttackCD = 0;//强普CD(设定值)
+    public int EnhancedAttackCD = 0;//强普cd（实际使用)
+    public int AbilityAssassinEnhancedAttackCount = 0;//强普个数
+
     //部分引用
     //死亡后界面相关
     public GameObject GameOver;
@@ -99,6 +106,7 @@ public class Attributes : MonoBehaviour
     //脚本
     public PlayerLevelUP PlayerLevelUP;
     public OthersUI OthersUI;
+    public PlayerUI PlayerUI;
     // Start is called before the first frame update
     public void Reset()//用于死后重置
     {
@@ -119,7 +127,7 @@ public class Attributes : MonoBehaviour
         //升级相关
         xp = 0f;
         TotalXP = 0f;
-        NextLevelXP = 5;
+        NextLevelXP = 10;
         level = 0;
         AbilityPerLevel = 3;
 
@@ -162,12 +170,18 @@ public class Attributes : MonoBehaviour
         //刺客流
         AbilityAssassinMoveSpeedEnhance = 1f;//刺客的移速增幅
         AbilityAssassinBiggerKnife = 1f;//更大刀光
-    }
+        AbilityAssassinEnhancedAttackBiggerKnife = 1f;//强普刀光增幅
+        AbilityAssassinEnhancedAttackHigherDamage = 1f;//强普伤害增幅
+        AbilityAssassinEnhancedAttackCD = 0;//强普CD
+        AbilityAssassinEnhancedAttackCount = 0;//强普个数
+
+}
     private void Awake()
     {
         InitializeAbilities(); // 初始化能力列表
         rb = gameObject.GetComponent<Rigidbody2D>();
-        OthersUI = gameObject.GetComponent<OthersUI>();        
+        OthersUI = gameObject.GetComponent<OthersUI>();   
+        PlayerUI= gameObject.GetComponent<PlayerUI>();
     }
     void Start()
     {
@@ -177,8 +191,9 @@ public class Attributes : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {   
+    {
         BeDamaedByLine();
+        if (AbilityAssassinEnhancedAttackCount==0 && AbilityAssassinEnhancedAttackCD!=0)WaitEnhancedAttack();//有该能力且没有强普才开始积累
     }
     void BeDamaedByLine()
     {
@@ -196,7 +211,7 @@ public class Attributes : MonoBehaviour
             enemy.GetDamage(enemy, enemy.AbilityThornsHurtEachOtherDamage, false);
         }
     }
-    bool CheckStatic()
+    bool CheckStatic()//检查是否静止
     {
         if ((rb.velocity.x < GameManager.Instance.MinStep || rb.velocity.x > -GameManager.Instance.MinStep) && (rb.velocity.y < GameManager.Instance.MinStep || rb.velocity.y > -GameManager.Instance.MinStep)) return true;//x,y速度小于某一值判定为静止
         return false;
@@ -211,6 +226,17 @@ public class Attributes : MonoBehaviour
         if(AbilityThornsHedgehog>0 && ReflectDamage)EnemyAttributes.GetDamage(this, damage*AbilityThornsHedgehog,false);//反弹伤害 且不反弹反伤的反伤
         OthersUI.TotalDamage+=(hp0 - hp);//显示伤害数字
         return hp0 - hp;//返回实际损失血量
+    }
+    void WaitEnhancedAttack()
+    {
+        //Debug.Log("我在减cd了啊");
+        EnhancedAttackCD--;
+        if(EnhancedAttackCD<=0)
+        {
+            EnhancedAttackCD = AbilityAssassinEnhancedAttackCD;//设置cd
+            AbilityAssassinEnhancedAttackCount++;
+            if(IsPlayer==1)PlayerUI.EnhancedAttackPicture.gameObject.SetActive(true);//如果是玩家，显示图标
+        }
     }
     void InitializeAbilities()
     {
@@ -575,6 +601,25 @@ public class Attributes : MonoBehaviour
                     else if(L==3)AbilityAssassinBiggerKnife=1.9f;
                     else if(L==4)AbilityAssassinBiggerKnife=2.2f;
                     else if(L==5)AbilityAssassinBiggerKnife=2.5f;
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Assassin)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "强化攻击",
+                description = "停止攻击一段时间后积累一次强化攻击，该次攻击刀光更大，伤害更高。有强化攻击时角色右侧会显示小刀",
+
+                unlockAction = (int L) => {
+                    if(L==1){AbilityAssassinEnhancedAttackBiggerKnife=1.3f;AbilityAssassinEnhancedAttackCD=60;AbilityAssassinEnhancedAttackHigherDamage=3f; }
+                    else if(L==2){AbilityAssassinEnhancedAttackBiggerKnife=1.6f;AbilityAssassinEnhancedAttackCD=80;AbilityAssassinEnhancedAttackHigherDamage=5f; }
+                    else if(L==3){AbilityAssassinEnhancedAttackBiggerKnife=1.9f;AbilityAssassinEnhancedAttackCD=100;AbilityAssassinEnhancedAttackHigherDamage=7f; }
+                    else if(L==4){AbilityAssassinEnhancedAttackBiggerKnife=2.2f;AbilityAssassinEnhancedAttackCD=120;AbilityAssassinEnhancedAttackHigherDamage=9f; }
+                    else if(L==5){AbilityAssassinEnhancedAttackBiggerKnife=2.5f;AbilityAssassinEnhancedAttackCD=140;AbilityAssassinEnhancedAttackHigherDamage=12f; }
+                    WaitEnhancedAttack();//升级立刻获得一发强普
                 },
                 AbleCheck = (int L)=>
                 {
