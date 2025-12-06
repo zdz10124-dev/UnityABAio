@@ -7,6 +7,7 @@ using static AllControl;
 
 public class EnemyAI : MonoBehaviour
 {
+    int CD;//因为敌人和玩家攻击的形式不一样（一个用鼠标触发，一个指令）所以CD也只能在这里多做一份
     public List<Collider2D> CollList;
     public Collider2D coll;
     private Rigidbody2D rb;
@@ -26,6 +27,7 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CD > 0) CD--;//设置攻击间隔
         for (int i = 0; i < CollList.Count; i++)
         {
             if (Vector2.Distance(CollList[i].transform.position, rb.transform.position)>Attributes.VisionRange || !CollList[i].gameObject.activeSelf)CollList.RemoveAt(i);//在视野外的物体去除
@@ -177,10 +179,15 @@ public class EnemyAI : MonoBehaviour
         }
 
         Vector2 direction = (Player.transform.position - rb.transform.position).normalized;
+        HitPlayer(direction);
+        rb.velocity = direction*Attributes.MoveSpeed;
+    }
+    void HitPlayer(Vector2 direction)
+    {
+        if (CD > 0) return;
         //Debug.LogFormat("为什么射不出来好难受,方向是{0}",direction);
         gameObject.GetComponent<Shoot>().shoot(rb, direction, Attributes);//向玩家射击
-        rb.velocity = direction*Attributes.MoveSpeed;
-
+        CD = Attributes.AttackTime;
     }
     void FleeFromPlayer()
     {

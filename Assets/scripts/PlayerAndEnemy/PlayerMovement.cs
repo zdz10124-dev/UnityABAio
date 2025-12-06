@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Attributes Attributes;
     private float MoveSpeed;
+    int CD=0;
+    public AttackFunction AttackFunction;
 
 
     //[SerializeField] private float MoveSpeed=7;
@@ -27,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CD > 0) CD--;//攻击间隔的实现
         //急停
         if (Input.GetKeyUp(KeyCode.A))
         {
@@ -80,19 +83,22 @@ public class PlayerMovement : MonoBehaviour
     } 
     void attack()
     {
-
+        if (CD > 0) return;
         Vector3 position= Input.mousePosition;//获取鼠标坐标
         position.z = -Camera.main.transform.position.z;//校准z坐标
         position = Camera.main.ScreenToWorldPoint(position);//转换为世界坐标（三维)
-
         Vector3 PlayerPosition = rb.transform.position;//转换为3维，防止三维二维运算出错
-
-        Vector2 direction = (position - PlayerPosition).normalized;//获取方向向量
-        //Debug.LogFormat("当前角色坐标={0}，鼠标坐标={1}，方向={2}",rb.transform.position,position,direction);
-        GetComponent<Shoot>().shoot(rb, direction,Attributes);
-        //GameObject newBullet=Instantiate(bullet, rb.transform.position, Quaternion.identity);//创建子弹
-        //Bullet Bullet=newBullet.GetComponent<Bullet>();//获取子弹挂载的脚本
-        //Bullet.Initialize(direction,Attributes);//传递参数
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Assassin)
+        {
+            AttackFunction.SwingKnife(Attributes, position);//如果是刺客，攻击改为挥刀
+        }
+        else
+        {
+            Vector2 direction = (position - PlayerPosition).normalized;//获取方向向量
+            //Debug.LogFormat("当前角色坐标={0}，鼠标坐标={1}，方向={2}",rb.transform.position,position,direction);
+            GetComponent<Shoot>().shoot(rb, direction, Attributes);
+        }
+        CD = Attributes.AttackTime;//重置攻击间隔
 
 
     }

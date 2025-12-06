@@ -44,7 +44,7 @@ public class AllControl : MonoBehaviour
         public float BasicLootXP = 10f;//杀死敌人的基础获得经验值
         public float LootXPRate = 0.5f;//杀死敌人时掠夺的经验值
         //场景池相关
-        public int BulletPoolSize = 30;
+        public int BulletPoolSize = 300;
         public int FruitPoolSize = 100;
         //突然意识到在inspoector里设置poolsize更好，能更好的对应每个不同的脚本
         //鉴于前面这两个已经写了就保留吧，其他的poolsize请在特定的脚本里设置
@@ -54,6 +54,8 @@ public class AllControl : MonoBehaviour
         public int GridUnitLength = 2;//地图生成时一个图格的大小
         public int FightRoomMinWidth = 20;//一个战斗地图的宽最短是几个格子
         //具体的升级后属性提升的公式请去levelup的具体函数里改，里面用加dy的方式来求下一项是多少
+        //挥刀
+        public float SwingKnifeDertaY=1;//刀光出现在人物中心点上方多少
     }
     // Start is called before the first frame update
     void Start()

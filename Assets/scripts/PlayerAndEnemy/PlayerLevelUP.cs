@@ -114,6 +114,7 @@ public class PlayerLevelUP : MonoBehaviour
         }
         Attributes.MoveSpeedLV += 1;//每升一级可以获得的提升(对数函数)
         Attributes.MoveSpeed = 2f + 0.8f * Mathf.Log(Attributes.MoveSpeedLV + 1);
+        Attributes.MoveSpeed *= Attributes.AbilityAssassinMoveSpeedEnhance;//刺客的移速增幅
         if (Attributes.MyStyle==(int)Attributes.AbilityStyle.Thorns && Attributes.MoveSpeed > Attributes.AbilityThornsMaxMoveSpeed)
         {
             Attributes.MoveSpeed = Attributes.AbilityThornsMaxMoveSpeed;//反伤流的限制

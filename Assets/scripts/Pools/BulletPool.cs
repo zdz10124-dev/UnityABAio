@@ -31,7 +31,8 @@ public class BulletPool : MonoBehaviour
         else
         {
             bullet = Instantiate(bulletPrefab);
-        } 
+        }
+        bullet.transform.localScale = StartScale; //∑¿÷πŒﬁœﬁÀı∑≈
         bullet.SetActive(true);
         bullet.transform.position = position;
         return bullet;

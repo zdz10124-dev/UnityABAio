@@ -84,7 +84,9 @@ public class Attributes : MonoBehaviour
     public float AbilityFirePowerTrackRange = 0f;//追踪范围
     public float AbilityFirePowerExplodeRange = 0f;//爆炸范围
     public float AbilityFirePowerExplodeDamageRate = 0f;//爆炸伤害：是攻击力乘以一个百分比
-
+    //刺客流
+    public float AbilityAssassinMoveSpeedEnhance = 1f;//刺客的移速增幅
+    public float AbilityAssassinBiggerKnife = 1f;//更大刀光
     //部分引用
     //死亡后界面相关
     public GameObject GameOver;
@@ -157,6 +159,9 @@ public class Attributes : MonoBehaviour
         AbilityFirePowerTrackRange = 0f;//追踪范围
         AbilityFirePowerExplodeRange = 0f;//爆炸范围
         AbilityFirePowerExplodeDamageRate = 0f;//爆炸伤害：是攻击力乘以一个百分比
+        //刺客流
+        AbilityAssassinMoveSpeedEnhance = 1f;//刺客的移速增幅
+        AbilityAssassinBiggerKnife = 1f;//更大刀光
     }
     private void Awake()
     {
@@ -531,8 +536,52 @@ public class Attributes : MonoBehaviour
                     if(MyStyle==(int)AbilityStyle.FirePower)return true;
                     else return false;//已经有了别的流派
                 }
-            }
+            },
+            //刺客流
+            new Ability {
+                abilityName = "疾行",
+                description = "移速更快且增长更快。武器改为近战，无法再提升攻击范围",
 
+                unlockAction = (int L) => {
+                    if(L==1)
+                    {
+                        MyStyle = (int)AbilityStyle.Assassin;
+                        AttackTime=5;//近战的攻速有所增加
+                    }
+                    if(L==1)AbilityAssassinMoveSpeedEnhance=1.2f;
+                    else if(L==2)AbilityAssassinMoveSpeedEnhance=1.4f;
+                    else if(L==3)AbilityAssassinMoveSpeedEnhance=1.6f;
+                    else if(L==4)AbilityAssassinMoveSpeedEnhance=1.8f;
+                    else if(L==5)AbilityAssassinMoveSpeedEnhance=2.0f;
+                    PlayerLevelUP.WaitQueue++;
+                    MoveSpeedLV-=1;
+                    PlayerLevelUP.MoveSpeedUp();//刷新一下，以更新速度增幅
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==-1 || MyStyle==(int)AbilityStyle.Assassin)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "大刀光",
+                description = "刀光更大",
+
+                unlockAction = (int L) => {
+                    if(L==1)AbilityAssassinBiggerKnife=1.3f;
+                    else if(L==2)AbilityAssassinBiggerKnife=1.6f;
+                    else if(L==3)AbilityAssassinBiggerKnife=1.9f;
+                    else if(L==4)AbilityAssassinBiggerKnife=2.2f;
+                    else if(L==5)AbilityAssassinBiggerKnife=2.5f;
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Assassin)return true;
+                    else return false;//已经有了别的流派
+                }
+            }
             // 其他能力...
         };
     }
