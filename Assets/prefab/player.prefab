@@ -247,7 +247,6 @@ GameObject:
   - component: {fileID: 3875246473544053260}
   - component: {fileID: 1434890333035104999}
   - component: {fileID: 6403347326027282098}
-  - component: {fileID: 2914006830153523742}
   m_Layer: 0
   m_HasEditorInfo: 1
   m_Name: player
@@ -341,6 +340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca52d1b1abed0b74bb491f8106e0222a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AttackFunction: {fileID: 0}
 --- !u!50 &7852891287779937753
 Rigidbody2D:
   serializedVersion: 4
@@ -381,6 +381,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XPbar: {fileID: 0}
+  TipUI: {fileID: 0}
+  EnhancedAttackPicture: {fileID: 0}
+  FlashPicture: {fileID: 0}
 --- !u!114 &5142573631969248911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -403,6 +406,7 @@ MonoBehaviour:
   AttackPower: 1
   AttackTime: 60
   xp: 0
+  TotalXP: 0
   NextLevelXP: 5
   level: 0
   AbilityPerLevel: 3
@@ -410,10 +414,54 @@ MonoBehaviour:
   DefenseLV: 0
   AttackPowerLV: 0
   AttackRangeLV: 0
+  Hide: 0
+  Team: 0
   VisionRange: 5
   ExtraChaseRange: 2
   ExtraFleeRange: 8
   FleeHPPersent: 0.2
+  MyStyle: -1
+  AbilityLevel: 00000000
+  AbilityThornsMaxMoveSpeed: 2
+  AbilityThornsHedgehog: 0
+  AbilityThornsSheild: 1
+  AbilityThornsHoldGround: 1
+  AbilityThornsHurtEachOther: 0
+  AbilityThornsHurtEachOtherRange: 0
+  AbilityThornsHurtEachOtherDamage: 0
+  DamageLines: []
+  LiningPlayers: []
+  AbilitySniperMaxMoveSpeed: 2
+  AbilitySniperAttackEnhance: 1
+  AbilitySniperRangeEnhance: 1
+  AbilitySniperSmallerBulletScale: 1
+  AbilitySniperArmorPierce: 0
+  AbilityFirePowerMaxAttackRange: 5
+  AbilityFirePowerBulletCount: 1
+  AbilityFirePowerScatteringAngle: 20
+  AbilityFirePowerBiggerBulletScale: 1
+  AbilityFirePowerTrackRange: 0
+  AbilityFirePowerExplodeRange: 0
+  AbilityFirePowerExplodeDamageRate: 0
+  AbilityAssassinMoveSpeedEnhance: 1
+  AbilityAssassinBiggerKnife: 1
+  AbilityAssassinEnhancedAttackBiggerKnife: 1
+  AbilityAssassinEnhancedAttackHigherDamage: 1
+  AbilityAssassinEnhancedAttackCD: 0
+  EnhancedAttackCD: 0
+  EnhancedAttackCount: 0
+  AbilityAssassinVampireRate: 0
+  AbilityAssassinFlashRange: 0
+  AbilityAssassinFlashCD: 0
+  FlashCD: 0
+  FlashCount: 0
+  GameOver: {fileID: 0}
+  TempCamera: {fileID: 0}
+  InGameCanvas: {fileID: 0}
+  DamageLinePool: {fileID: 0}
+  PlayerLevelUP: {fileID: 0}
+  OthersUI: {fileID: 0}
+  PlayerUI: {fileID: 0}
 --- !u!114 &8547445635075753753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,6 +538,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   AbilityButton: {fileID: 0}
+  WaitQueue: 0
+  WaitQueue2: 0
+  MyLV: {fileID: 0}
 --- !u!114 &1434890333035104999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -503,6 +554,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LifeBar: {fileID: 5733243540478356092}
+  DamageDisplayUI: {fileID: 0}
+  TotalDamage: 0
 --- !u!114 &6403347326027282098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,19 +568,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 437266f0661d63241bd7b0c6c1e033f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2914006830153523742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4664431953931942562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2998e070d99ede440a2e9a888c473fcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pool: {fileID: 0}
+  LastAttacker: {fileID: 0}
 --- !u!1 &5953981464960831064
 GameObject:
   m_ObjectHideFlags: 0

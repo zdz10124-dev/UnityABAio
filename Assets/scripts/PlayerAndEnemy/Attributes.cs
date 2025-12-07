@@ -42,6 +42,8 @@ public class Attributes : MonoBehaviour
     public int AttackRangeLV = 0;
     //状态
     public bool Hide=false;//检测是否躲草
+    //队伍
+    public int Team;
     //机器人
     public float VisionRange = 5f;//类似半径，这里设置的是一半的，方便与射程对比
     public float ExtraChaseRange = 2;//在视野外额外追击的距离
@@ -92,7 +94,22 @@ public class Attributes : MonoBehaviour
     public float AbilityAssassinEnhancedAttackHigherDamage = 1f;//强普伤害增幅
     public int AbilityAssassinEnhancedAttackCD = 0;//强普CD(设定值)
     public int EnhancedAttackCD = 0;//强普cd（实际使用)
-    public int AbilityAssassinEnhancedAttackCount = 0;//强普个数
+    public int EnhancedAttackCount = 0;//强普个数
+    public float AbilityAssassinVampireRate = 0f;//吸血比例
+    public float AbilityAssassinFlashRange = 0f;//闪现距离
+    public int AbilityAssassinFlashCD = 0;//闪现CD 
+    public int FlashCD = 0;//实际使用的闪现cd
+    public int FlashCount = 0;//已经有的闪现数量
+    //召唤流
+    public List<Attributes> AbilitySummonCreatureList=null;//召唤物列表
+    public int AbilitySummonCD=0;//召唤一个东西的CD
+    public int SummonCD=0;//实际cd
+    public float AbilitySummonAttackRate=0f;//召唤物的攻击力比例
+    public float AbilitySummonHPRate = 0f;//召唤物的血量比例
+    public int AbilitySummonMaxCreatureCount = 0;//召唤物的最大数量
+    public float AbilitySummonCreatureMaxMovement = 3f;//召唤物的移速限制
+    public float AbilitySummonMaxDefense = 2f;//召唤流的防御力限制
+    
 
     //部分引用
     //死亡后界面相关
@@ -103,6 +120,7 @@ public class Attributes : MonoBehaviour
     private Rigidbody2D rb;
     //对象池
     public GameObject DamageLinePool;
+    public EverythingPool SummonCreatruePool;
     //脚本
     public PlayerLevelUP PlayerLevelUP;
     public OthersUI OthersUI;
@@ -173,15 +191,36 @@ public class Attributes : MonoBehaviour
         AbilityAssassinEnhancedAttackBiggerKnife = 1f;//强普刀光增幅
         AbilityAssassinEnhancedAttackHigherDamage = 1f;//强普伤害增幅
         AbilityAssassinEnhancedAttackCD = 0;//强普CD
-        AbilityAssassinEnhancedAttackCount = 0;//强普个数
+        EnhancedAttackCount = 0;//强普个数
+        EnhancedAttackCD = 0;//强普cd（实际使用)
+        AbilityAssassinVampireRate = 0f;//吸血比例
+        AbilityAssassinFlashRange = 0f;//闪现距离
+        AbilityAssassinFlashCD = 0;//闪现CD 
+        FlashCD = 0;//实际使用的闪现cd
+        FlashCount = 0;//已经有的闪现数量
+        //召唤流
+        AbilitySummonCreatureList.Clear();//召唤物列表
+        AbilitySummonCD = 0;//召唤一个东西的CD
+        SummonCD = 0;//实际cd
+        AbilitySummonAttackRate = 0f;//召唤物的攻击力比例
+        AbilitySummonHPRate = 0f;//召唤物的血量比例
+        AbilitySummonMaxCreatureCount = 0;//召唤物的最大数量
 
-}
+    }
     private void Awake()
     {
-        InitializeAbilities(); // 初始化能力列表
+        if(IsPlayer==1)
+        {
+            InitializeAbilities(); // 初始化能力列表
+            PlayerUI= gameObject.GetComponent<PlayerUI>();
+        }
+        if (IsPlayer==1 ||IsPlayer==0)//召唤物的队伍由主人赋值，不需要在这里进行设置
+        {
+            Team=++GameManager.Instance.TeamCount;//设置队伍
+        }
         rb = gameObject.GetComponent<Rigidbody2D>();
         OthersUI = gameObject.GetComponent<OthersUI>();   
-        PlayerUI= gameObject.GetComponent<PlayerUI>();
+
     }
     void Start()
     {
@@ -193,7 +232,9 @@ public class Attributes : MonoBehaviour
     void Update()
     {
         BeDamaedByLine();
-        if (AbilityAssassinEnhancedAttackCount==0 && AbilityAssassinEnhancedAttackCD!=0)WaitEnhancedAttack();//有该能力且没有强普才开始积累
+        if (EnhancedAttackCount==0 && EnhancedAttackCD>0)WaitEnhancedAttack();//有该能力且没有强普才开始积累
+        if(FlashCount==0 && FlashCD>0)WaitFlash();//有CD且没有闪现才积累
+        if (SummonCD > 0) SummonCD--;//召唤的cd
     }
     void BeDamaedByLine()
     {
@@ -216,7 +257,7 @@ public class Attributes : MonoBehaviour
         if ((rb.velocity.x < GameManager.Instance.MinStep || rb.velocity.x > -GameManager.Instance.MinStep) && (rb.velocity.y < GameManager.Instance.MinStep || rb.velocity.y > -GameManager.Instance.MinStep)) return true;//x,y速度小于某一值判定为静止
         return false;
      }
-    public float GetDamage(Attributes EnemyAttributes,float damage,bool ReflectDamage=true)
+    public void GetDamage(Attributes EnemyAttributes,float damage,bool ReflectDamage=true)
     {
         float hp0 = hp;//用来计算实际伤害
         gameObject.GetComponent<PlayerLife>().LastAttacker = EnemyAttributes;
@@ -224,8 +265,14 @@ public class Attributes : MonoBehaviour
         else hp -= (damage * 2 / (Defense*AbilityThornsHoldGround * (1 - EnemyAttributes.AbilitySniperArmorPierce) + 2));//如果静止，乘以系数
         //Debug.LogFormat("当前反伤比例是{0},isplayer是{1}\n", AbilityThornsHedgehog, IsPlayer);
         if(AbilityThornsHedgehog>0 && ReflectDamage)EnemyAttributes.GetDamage(this, damage*AbilityThornsHedgehog,false);//反弹伤害 且不反弹反伤的反伤
+        if(EnemyAttributes.AbilityAssassinVampireRate> 0) EnemyAttributes.AddHP((hp0-hp)*EnemyAttributes.AbilityAssassinVampireRate);//敌人吸血
         OthersUI.TotalDamage+=(hp0 - hp);//显示伤害数字
-        return hp0 - hp;//返回实际损失血量
+        //return hp0 - hp;//返回实际损失血量
+    }
+    public void AddHP(float a)
+    {
+        hp += a;
+        if(hp>MaxHP) hp = MaxHP;
     }
     void WaitEnhancedAttack()
     {
@@ -234,8 +281,54 @@ public class Attributes : MonoBehaviour
         if(EnhancedAttackCD<=0)
         {
             EnhancedAttackCD = AbilityAssassinEnhancedAttackCD;//设置cd
-            AbilityAssassinEnhancedAttackCount++;
+            EnhancedAttackCount++;
             if(IsPlayer==1)PlayerUI.EnhancedAttackPicture.gameObject.SetActive(true);//如果是玩家，显示图标
+        }
+    }
+    void WaitFlash()
+    {
+        FlashCD--;
+        if(FlashCD<=0)
+        {
+            FlashCount++;
+            if(IsPlayer==1)PlayerUI.FlashPicture.gameObject.SetActive(true);//如果是玩家，显示闪现图标
+        }
+    }
+    public void Summon(Vector3 pos)
+    {
+        GameObject SummonedCreatrue = SummonCreatruePool.GetItem(pos);
+        SummonedCreatrue.GetComponent<PlayerLife>().Owner = this;
+        Attributes a= SummonedCreatrue.GetComponent<Attributes>();
+        a.Team = Team;//设置队伍
+        a.IsPlayer = 2;
+        AbilitySummonCreatureList.Add(a);//加入召唤物队列
+        SummonCreatureReset(a);
+    }
+    void SummonCreatureReset(Attributes a)
+    {
+        a.AttackPower = AttackPower * AbilitySummonAttackRate;
+        a.MaxHP = MaxHP * AbilitySummonHPRate;
+        a.hp = a.MaxHP;
+        a.Defense=Defense;
+        a.AttackTime = AttackTime;
+        a.MoveSpeed= MoveSpeed;
+        if (a.MoveSpeed > AbilitySummonCreatureMaxMovement)
+        {
+            a.MoveSpeed= AbilitySummonCreatureMaxMovement;
+        }
+    }
+    public void RemoveACreature(int x)
+    {
+        AbilitySummonCreatureList[x].GetComponent<SummonedCreatrueAI>().Kill();
+        AbilitySummonCreatureList.RemoveAt(x);//删除这个召唤物
+    }
+    public void SummonedCreatrueMove(Vector3 pos)
+    {
+        for(int i=0;i<AbilitySummonCreatureList.Count;i++)
+        {
+            Attributes a= AbilitySummonCreatureList[i];
+            Vector2 v = (new Vector2(pos.x, pos.y) - a.rb.position).normalized;//算出方向
+            a.rb.velocity = v*a.MoveSpeed;//设置速度
         }
     }
     void InitializeAbilities()
@@ -627,7 +720,72 @@ public class Attributes : MonoBehaviour
                     if(MyStyle==(int)AbilityStyle.Assassin)return true;
                     else return false;//已经有了别的流派
                 }
-            }
+            },
+            new Ability {
+                abilityName = "吸血",
+                description = "恢复对方损失血量的一部分生命值",
+
+                unlockAction = (int L) => {
+                    if(L==1)AbilityAssassinVampireRate=0.1f;//吸血比例
+                    else if(L==2)AbilityAssassinVampireRate=0.2f;
+                    else if(L==3)AbilityAssassinVampireRate=0.3f;
+                    else if(L==4)AbilityAssassinVampireRate=0.4f;
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==4)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Assassin)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "闪现",
+                description = "每隔一定时间获得一个闪现(人物左侧会有图标提示)。运动时按下shift键向速度方向闪现一定距离",
+
+                unlockAction = (int L) => {
+                    if(L==1){AbilityAssassinFlashCD=200;AbilityAssassinFlashRange=3; }
+                    else if(L==2){AbilityAssassinFlashCD=170;AbilityAssassinFlashRange=3; }
+                    else if(L==3){AbilityAssassinFlashCD=140;AbilityAssassinFlashRange=3; }
+                    else if(L==4){AbilityAssassinFlashCD=100;AbilityAssassinFlashRange=3; }
+                    if(FlashCount==0)//如果没有闪现
+                    {
+                        FlashCD=1;//刷新一个闪现先
+                        WaitFlash();
+                    }
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==4)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Assassin)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            //召唤流
+            new Ability {
+                abilityName = "召唤",
+                description = "可以右键召唤召唤物，左键控制召唤物攻击，但你的防御力上限设为2。召唤物有移速上限，攻击力与你的攻击力成比例。",
+
+                unlockAction = (int L) => {
+                
+                    MyStyle = (int)AbilityStyle.Summon;
+                    AttackTime=5;//近战的攻速有所增加
+                    PlayerLevelUP.WaitQueue++;
+                    DefenseLV-=1;
+                    PlayerLevelUP.DefenseUp();//刷新一下，以更新防御限制
+
+                    AbilitySummonMaxCreatureCount=5;//初始的召唤物上限
+                    AbilitySummonCD=160;//初始召唤CD
+                    AbilitySummonHPRate=0.2f;//初始召唤物血量比例
+                    AbilitySummonAttackRate=0.1f;//初始召唤物攻击力比例
+
+                },
+                AbleCheck = (int L)=>
+                    {
+                        if(L==1)return false;//到达最大等级
+                        if(MyStyle==-1 || MyStyle==(int)AbilityStyle.Summon)return true;
+                        else return false;//已经有了别的流派
+                    }
+                }
             // 其他能力...
         };
     }

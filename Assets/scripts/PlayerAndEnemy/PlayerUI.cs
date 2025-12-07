@@ -11,6 +11,7 @@ public class PlayerUI : MonoBehaviour
     [SerializeField] public Image XPbar;
     public TextMeshProUGUI TipUI;
     public Image EnhancedAttackPicture;//强普标志
+    public Image FlashPicture;//闪现标志
     // Start is called before the first frame update
     void Start()
     {

@@ -22,7 +22,7 @@ public class KnifeDoDamage : MonoBehaviour
         if (collision == null) return;
         if(collision.gameObject.CompareTag("Player"))
         {
-            if(collision.gameObject!=Attributes.gameObject)
+            if(collision.gameObject.GetComponent<Attributes>().Team!=Attributes.Team)
             {
                 collision.gameObject.GetComponent<Attributes>().GetDamage(Attributes,Attributes.AttackPower/60*HigherDamage);
             }    

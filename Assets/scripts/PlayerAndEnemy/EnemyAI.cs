@@ -14,6 +14,8 @@ public class EnemyAI : MonoBehaviour
     private Attributes Attributes;
     private Collider2D Fruit;
     private Collider2D Player;//视野中其他的player
+    //脚本引用
+    public AttackFunction AttackFunction;
 
     private int WalkTime = 0;
     private int state = 0;
@@ -186,7 +188,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (CD > 0) return;
         //Debug.LogFormat("为什么射不出来好难受,方向是{0}",direction);
-        gameObject.GetComponent<Shoot>().shoot(rb, direction, Attributes);//向玩家射击
+        AttackFunction.shoot(rb, direction, Attributes);//向玩家射击
         CD = Attributes.AttackTime;
     }
     void FleeFromPlayer()

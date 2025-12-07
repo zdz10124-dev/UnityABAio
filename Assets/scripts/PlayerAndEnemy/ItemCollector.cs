@@ -33,8 +33,7 @@ public class ItemCollector : MonoBehaviour
             collision.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<FruitPool>().ReturnFruit(collision.gameObject);  //水果储存了自己的对象池索引，所以可以对所有水果各回各家  
             //CollectEffect.Play();
             Attributes.xp+= GameManager.Instance.XPperCherry;
-            if(GameManager.Instance.CherryHPUp+Attributes.hp>=Attributes.MaxHP)Attributes.hp=Attributes.MaxHP;
-            else Attributes.hp += GameManager.Instance.CherryHPUp;
+            Attributes.AddHP(GameManager.Instance.CherryHPUp + Attributes.hp);
 
             //cherriesText.text = "Cherries:" + cherries;
             //GameManager.Instance.score = cherries;

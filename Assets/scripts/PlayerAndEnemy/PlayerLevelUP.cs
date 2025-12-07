@@ -14,7 +14,7 @@ public class PlayerLevelUP : MonoBehaviour
     private Attributes Attributes;
     public Button[] buttons;
     public Button AbilityButton;
-    private List<Button> AbilityButtonList=new List<Button>();
+    private List<Button> AbilityButtonList = new List<Button>();
     public int WaitQueue = 0;//掌管数值
     public int WaitQueue2 = 0;//掌管能力
     private int IsAbility = 0;//表示当前已经有abilitybutton
@@ -24,7 +24,7 @@ public class PlayerLevelUP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Attributes= GetComponent<Attributes>();
+        Attributes = GetComponent<Attributes>();
         UpdateLV();
     }
     public void UpdateLV()
@@ -35,28 +35,28 @@ public class PlayerLevelUP : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Attributes.xp>=Attributes.NextLevelXP-0.001f)
+        if (Attributes.xp >= Attributes.NextLevelXP - 0.001f)
         {
-            Attributes.xp-=Attributes.NextLevelXP;
-            Attributes.TotalXP+=Attributes.NextLevelXP;
+            Attributes.xp -= Attributes.NextLevelXP;
+            Attributes.TotalXP += Attributes.NextLevelXP;
             Attributes.NextLevelXP *= AllControl.GameManager.Instance.GrowthRate;
             Attributes.level++;
             UpdateLV();//更新显示lv
             //Debug.Log("我升级了");
             WaitQueue++;//可以多次积累，防止因为长时间不选而跳过
-            if(Attributes.level% AllControl.GameManager.Instance.LevelsPerAbility==0) WaitQueue2++;//每隔几级有一个能力
+            if (Attributes.level % AllControl.GameManager.Instance.LevelsPerAbility == 0) WaitQueue2++;//每隔几级有一个能力
         }
-        if (Attributes.IsPlayer != 0 && WaitQueue > 0) AttributeEnhancement();
+        if (Attributes.IsPlayer == 1 && WaitQueue > 0) AttributeEnhancement();
         if (Attributes.IsPlayer == 0 && WaitQueue > 0) RobotAttributeEnhancement();//让敌人也能成长
-        if (Attributes.IsPlayer!=0 && WaitQueue2>0 && IsAbility==0) GetAbility();
+        if (Attributes.IsPlayer == 1 && WaitQueue2 > 0 && IsAbility == 0) GetAbility();
     }
     void RobotAttributeEnhancement()
     {
         int p = Random.Range(0, 4);//也许这里是屎山的根源之一，但是我现在懒得重构了，所以就用ifelse了。。。
-        if(p==0)DefenseUp();
-        else if(p==1)AttackPowerUp();
-        else if(p==2)AttackRangeUp();
-        else if(p==3)MoveSpeedUp();
+        if (p == 0) DefenseUp();
+        else if (p == 1) AttackPowerUp();
+        else if (p == 2) AttackRangeUp();
+        else if (p == 3) MoveSpeedUp();
         WaitQueue--;
     }
     void AttributeEnhancement()
@@ -70,8 +70,18 @@ public class PlayerLevelUP : MonoBehaviour
     }
     public void DefenseUp()
     {
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon && Attributes.Defense >= Attributes.AbilitySummonMaxDefense)
+        {
+            Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("防御力已经到达最大上限");
+            Debug.Log("已经到达最大上限");//升级前检测是否还能升级 召唤流限制防御力
+            return;
+        }
         Attributes.DefenseLV += 1;
         Attributes.Defense = 1.2f * Mathf.Pow(Attributes.DefenseLV, 0.5f);
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon && Attributes.Defense >= Attributes.AbilitySummonMaxDefense)
+        {
+            Attributes.Defense = Attributes.AbilitySummonMaxDefense;
+        }
         HideButton();
     }
     public void AttackPowerUp()
@@ -83,6 +93,12 @@ public class PlayerLevelUP : MonoBehaviour
     }
     public void AttackRangeUp()
     {
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Assassin || Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon)
+        {
+            Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("攻击范围对近战无效");
+            Debug.Log("已经到达最大上限");//升级前检测是否还能升级 刺客流限制范围 召唤流同样无效
+            return;
+        }
         if (Attributes.MyStyle == (int)Attributes.AbilityStyle.FirePower && Attributes.AttackRange >= Attributes.AbilityFirePowerMaxAttackRange)
         {
             Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("攻击范围已经到达最大上限");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public class Bullet : MonoBehaviour
 {
     public Attributes Attributes;
@@ -13,6 +14,7 @@ public class Bullet : MonoBehaviour
     public GameObject EnemyFound;//追踪的敌人
     //脚本引用
     public BulletTrack BulletTrack;//追踪用
+    public AttackFunction AttackFunction;//攻击模组相关
     // Start is called before the first frame update
     public void Initialize(Vector2 direction,Attributes myAttributes)
     {
@@ -37,7 +39,7 @@ public class Bullet : MonoBehaviour
         {
             Pool.GetComponent<BulletPool>().ReturnBullet(this.gameObject);
         }
-        if(collision.CompareTag("Player") && collision.gameObject != Attributes.gameObject)//子弹碰到人且不是自己
+        if(collision.CompareTag("Player") && collision.gameObject.GetComponent<Attributes>().Team != Attributes.Team)//子弹碰到人且不是自己
         {
             //Debug.Log("我们确实击中了");
             collision.gameObject.GetComponent<Attributes>().GetDamage(Attributes,Attributes.AttackPower);
@@ -50,7 +52,7 @@ public class Bullet : MonoBehaviour
             }
             if(Attributes.AbilityFirePowerExplodeRange>0.1)//会爆炸
             {
-                Explode();
+                AttackFunction.Explode(Attributes,Attributes.AbilityFirePowerExplodeDamageRate * Attributes.AttackPower, Attributes.AbilityFirePowerExplodeRange,transform.position);
             }
             Pool.GetComponent<BulletPool>().ReturnBullet(this.gameObject);
         }
@@ -71,29 +73,7 @@ public class Bullet : MonoBehaviour
         if (EnemyFound != null) TrackEnemy();//追踪敌人
 
     }
-    List<GameObject>  GetExplodeRange()//获得被爆炸波及的游戏对象
-    {
-        List<GameObject> players = new List<GameObject>();
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, Attributes.AbilityFirePowerExplodeRange);
 
-        foreach (Collider2D col in hits)
-        {
-            if (col.CompareTag("Player"))
-            {
-                if(col.gameObject!=Attributes.gameObject)players.Add(col.gameObject);
-            }
-        }
-
-        return players;
-    }
-    void Explode()
-    {
-        List<GameObject> a = GetExplodeRange();
-        for(int i = 0; i < a.Count; i++)
-        {
-            a[i].GetComponent<Attributes>().GetDamage(Attributes, Attributes.AbilityFirePowerExplodeDamageRate * Attributes.AttackPower);//造成爆炸伤害
-        }
-    }
     void TrackEnemy()
     {
         //Debug.Log("在追踪了");

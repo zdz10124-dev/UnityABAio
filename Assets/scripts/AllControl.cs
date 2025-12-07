@@ -57,6 +57,8 @@ public class AllControl : MonoBehaviour
         //具体的升级后属性提升的公式请去levelup的具体函数里改，里面用加dy的方式来求下一项是多少
         //挥刀
         public float SwingKnifeDertaY=1;//刀光出现在人物中心点上方多少
+        //队伍
+        public int TeamCount=0;//队伍计数器
     }
     // Start is called before the first frame update
     void Start()
