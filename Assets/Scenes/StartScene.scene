@@ -612,6 +612,7 @@ MonoBehaviour:
   pool: {fileID: 610849493}
   xbias: 1
   ybias: 1
+  GenerateSpawnPoint: {fileID: 1178302222}
 --- !u!4 &633423961
 Transform:
   m_ObjectHideFlags: 0
@@ -1028,6 +1029,53 @@ Transform:
   m_Children:
   - {fileID: 1543431790}
   m_Father: {fileID: 1980899709}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1178302221
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 7
+  m_Component:
+  - component: {fileID: 1178302223}
+  - component: {fileID: 1178302222}
+  m_Layer: 0
+  m_HasEditorInfo: 1
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1178302222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178302221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e358bce0cf0ba047a452ef78b34f7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GenerateWeight: 100
+  SpawnPoints: []
+--- !u!4 &1178302223
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178302221}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.08, y: 1.16, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1272503448
 GameObject:
@@ -1664,6 +1712,7 @@ MonoBehaviour:
   MinSize: f4010000
   MaxEnemyCount: 040000001400000064000000
   MinEnemyCount: 01000000060000001e000000
+  GenerateSpawnPoint: {fileID: 1178302222}
   GenerateSpecialBuilding: 15
   GenerateCommonBuilding: 250
   SpecialBuilding:
@@ -1857,6 +1906,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca52d1b1abed0b74bb491f8106e0222a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AttackFunction: {fileID: 0}
 --- !u!4 &3268581352034844782
 Transform:
   m_ObjectHideFlags: 0
@@ -1959,6 +2009,7 @@ MonoBehaviour:
   AttackPowerLV: 0
   AttackRangeLV: 0
   Hide: 0
+  Team: 0
   VisionRange: 5
   ExtraChaseRange: 2
   ExtraFleeRange: 8
@@ -1979,12 +2030,44 @@ MonoBehaviour:
   AbilitySniperRangeEnhance: 1
   AbilitySniperSmallerBulletScale: 1
   AbilitySniperArmorPierce: 0
+  AbilityFirePowerMaxAttackRange: 5
+  AbilityFirePowerBulletCount: 1
+  AbilityFirePowerScatteringAngle: 20
+  AbilityFirePowerBiggerBulletScale: 1
+  AbilityFirePowerTrackRange: 0
+  AbilityFirePowerExplodeRange: 0
+  AbilityFirePowerExplodeDamageRate: 0
+  AbilityAssassinMoveSpeedEnhance: 1
+  AbilityAssassinBiggerKnife: 1
+  AbilityAssassinEnhancedAttackBiggerKnife: 1
+  AbilityAssassinEnhancedAttackHigherDamage: 1
+  AbilityAssassinEnhancedAttackCD: 0
+  EnhancedAttackCD: 0
+  EnhancedAttackCount: 0
+  AbilityAssassinVampireRate: 0
+  AbilityAssassinFlashRange: 0
+  AbilityAssassinFlashCD: 0
+  FlashCD: 0
+  FlashCount: 0
+  AbilitySummonCreatureList: []
+  AbilitySummonCD: 0
+  SummonCD: 0
+  AbilitySummonAttackRate: 0
+  AbilitySummonHPRate: 0
+  AbilitySummonMaxCreatureCount: 0
+  AbilitySummonCreatureMaxMovement: 3
+  AbilitySummonMaxDefense: 2
+  AbilitySummonHelpEat: 0
+  SummonHelpEat: 0
+  Owner: {fileID: 0}
   GameOver: {fileID: 0}
   TempCamera: {fileID: 0}
   InGameCanvas: {fileID: 0}
   DamageLinePool: {fileID: 0}
+  SummonCreatruePool: {fileID: 0}
   PlayerLevelUP: {fileID: 0}
   OthersUI: {fileID: 0}
+  PlayerUI: {fileID: 0}
 --- !u!4 &3408810030010112764
 Transform:
   m_ObjectHideFlags: 0
@@ -2026,6 +2109,7 @@ MonoBehaviour:
   buttons: []
   AbilityButton: {fileID: 0}
   WaitQueue: 0
+  WaitQueue2: 0
   MyLV: {fileID: 0}
 --- !u!224 &3795984136537759260
 RectTransform:
@@ -2089,6 +2173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CollList: []
   coll: {fileID: 0}
+  AttackFunction: {fileID: 0}
 --- !u!114 &4160400913998242742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2136,6 +2221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LifeBar: {fileID: 5790234504452129840}
   DamageDisplayUI: {fileID: 0}
+  TotalDamage: 0
 --- !u!114 &4526496260044685659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2226,6 +2312,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LastAttacker: {fileID: 0}
+  Owner: {fileID: 0}
+  SummonedCreaturePool: {fileID: 0}
+  GenerateSpawnPoint: {fileID: 1178302222}
 --- !u!1 &5028832121970750470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2676,6 +2765,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   XPbar: {fileID: 0}
   TipUI: {fileID: 0}
+  EnhancedAttackPicture: {fileID: 0}
+  FlashPicture: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2689,3 +2780,4 @@ SceneRoots:
   - {fileID: 662987951}
   - {fileID: 521959790}
   - {fileID: 326212929}
+  - {fileID: 1178302223}

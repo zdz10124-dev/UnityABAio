@@ -131,6 +131,7 @@ public class Attributes : MonoBehaviour
     public void Reset()//用于死后重置
     {
         //return;//临时测试不重置
+        GetComponent<PlayerLife>().ReSpawn();
         MoveSpeed = 2f;
 
 
@@ -223,13 +224,19 @@ public class Attributes : MonoBehaviour
             Team=++GameManager.Instance.TeamCount;//设置队伍
         }
         rb = gameObject.GetComponent<Rigidbody2D>();
-        OthersUI = gameObject.GetComponent<OthersUI>();   
-
+        OthersUI = gameObject.GetComponent<OthersUI>();
+        
     }
     void Start()
     {
         //Reset();
-
+        if(IsPlayer==1)
+        {
+            Debug.Log("我调用了啊？");
+            GetComponent<PlayerLife>().Start();//初始化先
+            if (GetComponent<PlayerLife>() != null) GetComponent<PlayerLife>().ReSpawn();//随机选择出生点
+            else Debug.Log("PlayerLife未就绪");
+        }
     }
 
     // Update is called once per frame

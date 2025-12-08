@@ -4,6 +4,7 @@ using UnityEngine;
 public class GenerateEnemy1 : MonoBehaviour,IBuildings
 {
     public int GenerateWeight { get; set; } = 1;
+    public int MaxCount { get; set; } = -1;
     public GameObject pool;
     // Start is called before the first frame update
     void Start()

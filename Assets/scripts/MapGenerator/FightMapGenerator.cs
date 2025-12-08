@@ -17,6 +17,8 @@ public class FightMapGenerator : MonoBehaviour
     private int RoomSize;
 
     private int EnemyCount;
+    //脚本引用
+    public GenerateSpawnPoint GenerateSpawnPoint;
     //生成的东西相关
     public int GenerateSpecialBuilding;//有千分之它的概率尝试生成特殊建筑
     public int GenerateCommonBuilding;//同上
@@ -134,5 +136,8 @@ public class FightMapGenerator : MonoBehaviour
             rockpool.GetComponent<EverythingPool>().GetItem(new Vector3(-1, i-1, 0));
             rockpool.GetComponent<EverythingPool>().GetItem(new Vector3(width+1, i-1, 0));
         }
+        //避免没有重生点
+        GenerateSpawnPoint.AvoidEmpty(width/2,length/2);
+
     }
 }

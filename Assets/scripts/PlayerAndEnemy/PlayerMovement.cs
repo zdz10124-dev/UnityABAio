@@ -11,11 +11,8 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     private Rigidbody2D rb;
     private Attributes Attributes;
-    private float MoveSpeed;
-    int AttackCD=0;
     Vector3 position;//鼠标位置
-
-    public AttackFunction AttackFunction;
+    private Movement Movement;
 
 
     //[SerializeField] private float MoveSpeed=7;
@@ -24,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log("我被挂载了");
         rb= GetComponent<Rigidbody2D>();
         Attributes = rb.GetComponent<Attributes>();
-        rb.transform.position=GameManager.Instance.PlayerSpawnPosition;
+        Movement = rb.GetComponent<Movement>();
         //引入类的属性
     }
 
@@ -33,8 +30,6 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 v=Vector2.zero;
         UpdatePosition();//更新鼠标位置
-        if (AttackCD > 0) AttackCD--;//攻击间隔的实现
-
         //移动
         if (Input.GetKey(KeyCode.A))
         {
@@ -60,84 +55,29 @@ public class PlayerMovement : MonoBehaviour
         v=v.normalized;
         rb.velocity = v*Attributes.MoveSpeed;//有效防止斜着走走得快
 
+        Movement.UpdatePos(position);//更新鼠标位置
         if (Input.GetMouseButton(0))//按下左键射击
         {
-            attack();
+            Movement.PressStayMouse0();
         }
         if(Input.GetMouseButton(1))//按下右键召唤
         {
-            if(Attributes.MyStyle==(int)Attributes.AbilityStyle.Summon && Attributes.SummonCD==0)
-            {
-                Attributes.SummonCD = Attributes.AbilitySummonCD;//重设cd
-                if(Attributes.AbilitySummonCreatureList.Count >=Attributes.AbilitySummonMaxCreatureCount)
-                {
-                    Attributes.RemoveACreature(0);//如果超了，就删了再重新生成一个
-                }
-                Attributes.Summon(position);
-            }
+            Movement.PressStayMouse1();
         }
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift))//帮吃
         { 
-            if(Attributes.AbilitySummonHelpEat)//召唤物帮吃逻辑
-            {
-                if(Attributes.SummonHelpEat)
-                {
-                    Attributes.SummonHelpEat = false;
-                    Attributes.PlayerUI.UpdateTips("帮吃已关闭");
-                }
-                else
-                {
-                    Attributes.SummonHelpEat = true;
-                    Attributes.PlayerUI.UpdateTips("帮吃已打开");
-                }
-            }
+            Movement.PressDownLeftShift();
         }
-        if(Input.GetKey(KeyCode.LeftShift))
+        if(Input.GetKey(KeyCode.LeftShift))//闪现
         {
-
-            if(Attributes.FlashCD==0 && Attributes.FlashCount>0 && v!=Vector2.zero)//闪现逻辑
-            {
-                rb.transform.position += new Vector3((v * Attributes.AbilityAssassinFlashRange).x, (v * Attributes.AbilityAssassinFlashRange).y,0);//闪现
-                Attributes.FlashCount -= 1;//使用一次闪现
-                Attributes.FlashCD = Attributes.AbilityAssassinFlashCD;//重置CD
-                Attributes.PlayerUI.FlashPicture.gameObject.SetActive(false);//去除图标
-            }
- 
+            Movement.PressStayLeftShift(v);
         }
-
-
-
-
-        if (Attributes.AbilitySummonCreatureList.Count > 0) Attributes.SummonedCreatrueMove(position);//召唤物向鼠标方向移动
-         
     } 
     void UpdatePosition()
     {
         position = Input.mousePosition;//获取鼠标坐标
         position.z = -Camera.main.transform.position.z;//校准z坐标
         position = Camera.main.ScreenToWorldPoint(position);//转换为世界坐标（三维)
-    }
-    void attack()
-    {
-        if (AttackCD > 0) return;
-        Vector3 PlayerPosition = rb.transform.position;//转换为3维，防止三维二维运算出错
-        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Assassin)
-        {
-            AttackFunction.SwingKnife(Attributes, position);//如果是刺客，攻击改为挥刀
-        }
-        else if(Attributes.MyStyle==(int)Attributes.AbilityStyle.Summon)
-        {
-            for(int i = 0;i<Attributes.AbilitySummonCreatureList.Count;i++) AttackFunction.SwingKnife(Attributes.AbilitySummonCreatureList[i], position);//召唤物每一个都挥刀
-        }
-        else
-        {
-            Vector2 direction = (position - PlayerPosition).normalized;//获取方向向量
-            //Debug.LogFormat("当前角色坐标={0}，鼠标坐标={1}，方向={2}",rb.transform.position,position,direction);
-            AttackFunction.shoot(rb, direction, Attributes);
-        }
-        AttackCD = Attributes.AttackTime;//重置攻击间隔
-
-
     }
 }
 

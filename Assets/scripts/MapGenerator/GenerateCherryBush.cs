@@ -5,9 +5,12 @@ using UnityEngine;
 public class GenerateCherryBush : MonoBehaviour,IBuildings
 {
     public int GenerateWeight { get; set; }=10;
+    public int MaxCount { get; set; } = -1;
     public GameObject pool;
     public float xbias=1f;
     public float ybias=1f;
+    //其他脚本引用
+    public GenerateSpawnPoint GenerateSpawnPoint;//重生点只会在草里生成
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +20,7 @@ public class GenerateCherryBush : MonoBehaviour,IBuildings
     {
         //Debug.Log("俺真的尝试生成了得苏哇");
         pool.gameObject.GetComponent<EverythingPool>().GetItem(new Vector3(x+Random.Range(0,xbias), y+Random.Range(0,ybias), 0));
+        GenerateSpawnPoint.NewASpawnPoint(new Vector3(x,y,0));//尝试生成重生点
     }
     // Update is called once per frame
     void Update()

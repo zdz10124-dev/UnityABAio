@@ -10,7 +10,9 @@ public class PlayerLife : MonoBehaviour
     // Start is called before the first frame update
     public Attributes Owner;
     public EverythingPool SummonedCreaturePool;
-    void Start()
+    //脚本引用
+    public GenerateSpawnPoint GenerateSpawnPoint;
+    public void Start()
     {
         Attributes = GetComponent<Attributes>();
     }
@@ -38,8 +40,8 @@ public class PlayerLife : MonoBehaviour
         if (Attributes.IsPlayer == 0)
         {
             //transform.parent.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<EverythingPool>().ReturnItem(transform.parent.gameObject);
-            transform.position = Vector3.one;//临时写的，可以一直爽
             Attributes.hp = Attributes.MaxHP;//这样怪物一直重生我可以一直杀杀杀
+            ReSpawn();
         }
         else if (Attributes.IsPlayer == 2)//召唤物死亡直接扔进对象池没什么好说的
         {
@@ -52,7 +54,8 @@ public class PlayerLife : MonoBehaviour
             Attributes.TempCamera.gameObject.SetActive(true);//临时设置一个摄像头
             Attributes.TempCamera.transform.position = new Vector3(transform.position.x, transform.position.y, -10);//移动到角色死亡位置
             Attributes.InGameCanvas.gameObject.SetActive(false);//防止升级按钮挡视线
-                                                                //去除ui
+            Attributes.PlayerUI.EnhancedAttackPicture.gameObject.SetActive(false);//去除强普ui
+            Attributes.PlayerUI.FlashPicture.gameObject.SetActive(false);//去除闪现ui
 
             gameObject.GetComponent<PlayerLevelUP>().HideAbilityButton();
             gameObject.GetComponent<PlayerLevelUP>().HideButton();
@@ -63,5 +66,12 @@ public class PlayerLife : MonoBehaviour
 
             gameObject.SetActive(false);//禁用物体
         }
+    }
+    public void ReSpawn()
+    {
+        //Debug.LogFormat("正在为{0}设置出生点",Attributes.name);
+        if (GenerateSpawnPoint != null && Attributes != null) Attributes.transform.position = GenerateSpawnPoint.FindAPlaceToSpawn();
+        else if (GenerateSpawnPoint == null) Debug.Log("没有找到GenerateSpawnPoint");
+        else if (Attributes == null) Debug.Log("没有找到Attributes");
     }
 }

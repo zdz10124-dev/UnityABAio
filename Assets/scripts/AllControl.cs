@@ -20,8 +20,6 @@ public class AllControl : MonoBehaviour
         public float CameraMinSize = 2f;
         public float CameraMaxSize = 7f;
         public float CameraZoomSpeed = 2f;
-        //玩家
-        public Vector3 PlayerSpawnPosition=new Vector3 (1,1,0);
         //机器人
         public int RandomMinWalkTime = 120;//单位是update触发一次。
         public int RandomMaxWalkTime = 180;//这两个控制随机漫步改变方向的时间间隔
@@ -29,7 +27,9 @@ public class AllControl : MonoBehaviour
         public int AbilityButtonR = 300;//abilitybutton中心点所在范围
         public int AbilityButtonBias = 300;//设置一下偏移方便居中
         //刷新率
-        public int MaxFPS = 60;//最大帧率
+        public int MaxFPS = 60;//目标帧率
+        //重生
+        public List<float> SpawnRanges = new List<float>{20,15,10,6,4};//复活时周围没有人的半径
         //UI
         public float DamageDisplayYUP = 0.5f;//伤害数值显示在角色上方多少
         public int DamaeDisplayCD = 10;//伤害显示的cd(也就是多长时间内的伤害会被累计显示)单位是帧
@@ -42,8 +42,8 @@ public class AllControl : MonoBehaviour
         //升级
         public int LevelsPerAbility = 1;//升多少级能获得一个能力
         //击杀所得
-        public float BasicLootXP = 10f;//杀死敌人的基础获得经验值
-        public float LootXPRate = 0.5f;//杀死敌人时掠夺的经验值
+        public float BasicLootXP = 7f;//杀死敌人的基础获得经验值
+        public float LootXPRate = 0.1f;//杀死敌人时掠夺的经验值
         //场景池相关
         public int BulletPoolSize = 300;
         public int FruitPoolSize = 100;
