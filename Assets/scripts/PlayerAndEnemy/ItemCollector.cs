@@ -26,14 +26,19 @@ public class ItemCollector : MonoBehaviour
         //Debug.LogFormat("吃樱桃器查询碰撞中，当前碰到物品标签为{0}", collision.gameObject.tag);
         if (collision.gameObject.CompareTag("fruit"))
         {
-            //Debug.Log("食物被吃: " + collision.name);
-            //Debug.Log("食物位置: " + collision.transform.position);
-            //Debug.Log("我的位置: " + transform.position);
-            //Debug.Log("双方距离: " + Vector2.Distance(transform.position, collision.transform.position));
+            if (Attributes.IsPlayer == 2 && !Attributes.Owner.SummonHelpEat) return;
             collision.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<FruitPool>().ReturnFruit(collision.gameObject);  //水果储存了自己的对象池索引，所以可以对所有水果各回各家  
-            //CollectEffect.Play();
-            Attributes.xp+= GameManager.Instance.XPperCherry;
+                                                                                                                                          //CollectEffect.Play();
             Attributes.AddHP(GameManager.Instance.CherryHPUp + Attributes.hp);
+            if (Attributes.IsPlayer==0 || Attributes.IsPlayer==1)
+            {
+                Attributes.xp+= GameManager.Instance.XPperCherry;
+            }
+            else if(Attributes.IsPlayer==2)
+            {
+                Attributes.Owner.xp += GameManager.Instance.XPperCherry;
+            }
+
 
             //cherriesText.text = "Cherries:" + cherries;
             //GameManager.Instance.score = cherries;

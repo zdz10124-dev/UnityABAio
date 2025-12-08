@@ -87,7 +87,7 @@ public class PlayerLevelUP : MonoBehaviour
     public void AttackPowerUp()
     {
         Attributes.AttackPowerLV += 1;
-        Attributes.AttackPower = 1f + 2.5f * Mathf.Pow(Attributes.AttackPowerLV, 0.6f);
+        Attributes.AttackPower = 1f + 1f * Mathf.Pow(Attributes.AttackPowerLV, 0.6f);
         Attributes.AttackPower *= Attributes.AbilitySniperAttackEnhance;//¾Ñ»÷Á÷ÔöÉË
         HideButton();
     }

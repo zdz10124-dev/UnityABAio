@@ -12,7 +12,7 @@ public class SummonedCreatrueAI : MonoBehaviour
     }
     public void Kill()
     {
-        Attributes.hp = 0;
+        Attributes.hp = -1f;
     }
     // Update is called once per frame
     void Update()

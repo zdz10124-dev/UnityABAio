@@ -76,13 +76,33 @@ public class PlayerMovement : MonoBehaviour
                 Attributes.Summon(position);
             }
         }
-
-        if(Input.GetKey(KeyCode.LeftShift) && Attributes.FlashCD==0 && Attributes.FlashCount>0 && v!=Vector2.zero)
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        { 
+            if(Attributes.AbilitySummonHelpEat)//召唤物帮吃逻辑
+            {
+                if(Attributes.SummonHelpEat)
+                {
+                    Attributes.SummonHelpEat = false;
+                    Attributes.PlayerUI.UpdateTips("帮吃已关闭");
+                }
+                else
+                {
+                    Attributes.SummonHelpEat = true;
+                    Attributes.PlayerUI.UpdateTips("帮吃已打开");
+                }
+            }
+        }
+        if(Input.GetKey(KeyCode.LeftShift))
         {
-            rb.transform.position += new Vector3((v * Attributes.AbilityAssassinFlashRange).x, (v * Attributes.AbilityAssassinFlashRange).y,0);//闪现
-            Attributes.FlashCount -= 1;//使用一次闪现
-            Attributes.FlashCD = Attributes.AbilityAssassinFlashCD;//重置CD
-            Attributes.PlayerUI.FlashPicture.gameObject.SetActive(false);//去除图标
+
+            if(Attributes.FlashCD==0 && Attributes.FlashCount>0 && v!=Vector2.zero)//闪现逻辑
+            {
+                rb.transform.position += new Vector3((v * Attributes.AbilityAssassinFlashRange).x, (v * Attributes.AbilityAssassinFlashRange).y,0);//闪现
+                Attributes.FlashCount -= 1;//使用一次闪现
+                Attributes.FlashCD = Attributes.AbilityAssassinFlashCD;//重置CD
+                Attributes.PlayerUI.FlashPicture.gameObject.SetActive(false);//去除图标
+            }
+ 
         }
 
 

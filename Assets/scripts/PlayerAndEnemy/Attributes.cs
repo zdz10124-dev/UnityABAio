@@ -109,7 +109,9 @@ public class Attributes : MonoBehaviour
     public int AbilitySummonMaxCreatureCount = 0;//召唤物的最大数量
     public float AbilitySummonCreatureMaxMovement = 3f;//召唤物的移速限制
     public float AbilitySummonMaxDefense = 2f;//召唤流的防御力限制
-    
+    public bool AbilitySummonHelpEat = false;//召唤物能否帮忙吃东西
+    public bool SummonHelpEat = false;//实际是否帮吃
+    public Attributes Owner;//小召唤物才会有，记录主人
 
     //部分引用
     //死亡后界面相关
@@ -205,8 +207,10 @@ public class Attributes : MonoBehaviour
         AbilitySummonAttackRate = 0f;//召唤物的攻击力比例
         AbilitySummonHPRate = 0f;//召唤物的血量比例
         AbilitySummonMaxCreatureCount = 0;//召唤物的最大数量
+        AbilitySummonHelpEat = false;//召唤物能否帮忙吃东西
+        SummonHelpEat = false;//实际是否帮吃
 
-    }
+}
     private void Awake()
     {
         if(IsPlayer==1)
@@ -301,10 +305,11 @@ public class Attributes : MonoBehaviour
         Attributes a= SummonedCreatrue.GetComponent<Attributes>();
         a.Team = Team;//设置队伍
         a.IsPlayer = 2;
+        a.Owner = this;
         AbilitySummonCreatureList.Add(a);//加入召唤物队列
         SummonCreatureReset(a);
     }
-    void SummonCreatureReset(Attributes a)
+    void SummonCreatureReset(Attributes a)//对召唤物数值的设置
     {
         a.AttackPower = AttackPower * AbilitySummonAttackRate;
         a.MaxHP = MaxHP * AbilitySummonHPRate;
@@ -763,7 +768,7 @@ public class Attributes : MonoBehaviour
             //召唤流
             new Ability {
                 abilityName = "召唤",
-                description = "可以右键召唤召唤物，左键控制召唤物攻击，但你的防御力上限设为2。召唤物有移速上限，攻击力与你的攻击力成比例。",
+                description = "可以右键召唤召唤物，左键控制召唤物攻击，但你的防御力上限设为2。召唤物有移速上限，其他属性按比例继承你的属性。最多召唤五个。注：任何属性的更改必须重新召唤才生效",
 
                 unlockAction = (int L) => {
                 
@@ -780,12 +785,97 @@ public class Attributes : MonoBehaviour
 
                 },
                 AbleCheck = (int L)=>
-                    {
-                        if(L==1)return false;//到达最大等级
-                        if(MyStyle==-1 || MyStyle==(int)AbilityStyle.Summon)return true;
-                        else return false;//已经有了别的流派
-                    }
+                {
+                    if(L==1)return false;//到达最大等级
+                    if(MyStyle==-1 || MyStyle==(int)AbilityStyle.Summon)return true;
+                    else return false;//已经有了别的流派
                 }
+            },
+            new Ability {
+                abilityName = "强化召唤",
+                description = "你的攻击力会更高比例地转化为召唤物的攻击",
+
+                unlockAction = (int L) => {
+                    if(L==1)AbilitySummonAttackRate=0.4f;
+                    else if(L==2)AbilitySummonAttackRate=0.6f;
+                    else if(L==3)AbilitySummonAttackRate=0.8f;
+                    else if(L==4)AbilitySummonAttackRate=1f;
+                    else if(L==5)AbilitySummonAttackRate=1.2f;
+
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Summon)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "突破限速",
+                description = "解锁你召唤物更高的移动速度上限",
+
+                unlockAction = (int L) => {
+                    if(L==1)AbilitySummonCreatureMaxMovement=2.33f;
+                    else if(L==2)AbilitySummonCreatureMaxMovement=2.66f;
+                    else if(L==3)AbilitySummonCreatureMaxMovement=3f;
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==3)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Summon)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "召唤大师",
+                description = "可以召唤更多的召唤物",
+
+                unlockAction = (int L) => {
+                    if(L==1)AbilitySummonMaxCreatureCount=7;
+                    else if(L==2)AbilitySummonMaxCreatureCount=9;
+                    else if(L==3)AbilitySummonMaxCreatureCount=11;
+                    else if(L==4)AbilitySummonMaxCreatureCount=13;
+                    else if(L==5)AbilitySummonMaxCreatureCount=15;
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Summon)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "快速部署",
+                description = "缩短召唤法术的冷却时间，让你能更快地召集伙伴",
+
+                unlockAction = (int L) => {
+                    if(L==1)AbilitySummonCD=140;//原始为160
+                    else if(L==2)AbilitySummonCD=120;
+                    else if(L==3)AbilitySummonCD=100;
+                    else if(L==4)AbilitySummonCD=80;
+                    else if(L==5)AbilitySummonCD=60;
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==5)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Summon)return true;
+                    else return false;//已经有了别的流派
+                }
+            },
+            new Ability {
+                abilityName = "嘴替",
+                description = "按下shift键启动召唤物的帮吃功能。小召唤物可以替你吃水果，使你获取经验。(但血量还是加在召唤物上)",
+
+                unlockAction = (int L) => {
+                    AbilitySummonHelpEat=true;
+                },
+                AbleCheck = (int L)=>
+                {
+                    if(L==1)return false;//到达最大等级
+                    if(MyStyle==(int)AbilityStyle.Summon)return true;
+                    else return false;//已经有了别的流派
+                }
+            }
             // 其他能力...
         };
     }

@@ -6332,7 +6332,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8274819940489091724}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1cda9eb2f32d8d54681aade75a7e395f, type: 3}
   m_Name: 
@@ -7045,6 +7045,7 @@ GameObject:
   - component: {fileID: 2415255295598062281}
   - component: {fileID: 7687704717983372956}
   - component: {fileID: 8445203376846841506}
+  - component: {fileID: 8445203376846841507}
   m_Layer: 0
   m_HasEditorInfo: 1
   m_Name: SummonedCreature
@@ -7151,6 +7152,9 @@ MonoBehaviour:
   AbilitySummonMaxCreatureCount: 0
   AbilitySummonCreatureMaxMovement: 3
   AbilitySummonMaxDefense: 2
+  AbilitySummonHelpEat: 0
+  SummonHelpEat: 0
+  Owner: {fileID: 0}
   GameOver: {fileID: 439596785}
   TempCamera: {fileID: 1327488056}
   InGameCanvas: {fileID: 1549784792}
@@ -7172,6 +7176,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Attributes: {fileID: 0}
+--- !u!114 &8445203376846841507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8274819940489091724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cda9eb2f32d8d54681aade75a7e395f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8506931295584212237
 PrefabInstance:
   m_ObjectHideFlags: 0
