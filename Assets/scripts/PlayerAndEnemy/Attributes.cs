@@ -128,6 +128,7 @@ public class Attributes : MonoBehaviour
     public OthersUI OthersUI;
     public PlayerUI PlayerUI;
     public RobotVision RobotVision;
+    public EnemyAI EnemyAI;
     // Start is called before the first frame update
     public void Reset()//用于死后重置
     {
@@ -404,6 +405,10 @@ public class Attributes : MonoBehaviour
                     else if(L==3)AbilityThornsSheild=2.1f;
                     else if(L==4)AbilityThornsSheild=2.3f;
                     else if(L==5)AbilityThornsSheild=2.5f;
+                    PlayerLevelUP.WaitQueue++;
+                    DefenseLV-=1;
+                    PlayerLevelUP.DefenseUp();//刷新一下，以更新速度增幅
+
                 },
                 AbleCheck = (int L)=>
                 {
@@ -476,18 +481,18 @@ public class Attributes : MonoBehaviour
                     {
                         AbilitySniperRangeEnhance=1.3f;
                         AbilitySniperAttackEnhance=1.3f;
-                        AttackTime=30;
+                        AttackTime=80;
 
                     }
                     else if(L==2)
                     {
                         AbilitySniperRangeEnhance=1.6f;
                         AbilitySniperAttackEnhance=1.6f;
-                        AttackTime=60;
+                        AttackTime=90;
                     }
                     else if(L==3){ AbilitySniperRangeEnhance = 1.9f; AbilitySniperAttackEnhance = 1.9f;AttackTime=100; }
-                    else if(L==4){ AbilitySniperRangeEnhance = 2.2f; AbilitySniperAttackEnhance = 2.2f;AttackTime=140; }
-                    else if(L==5){ AbilitySniperRangeEnhance = 2.5f; AbilitySniperAttackEnhance = 2.5f;AttackTime=180; }
+                    else if(L==4){ AbilitySniperRangeEnhance = 2.2f; AbilitySniperAttackEnhance = 2.2f;AttackTime=110; }
+                    else if(L==5){ AbilitySniperRangeEnhance = 2.5f; AbilitySniperAttackEnhance = 2.5f;AttackTime=120; }
                     PlayerLevelUP.WaitQueue++;
                     AttackPowerLV-=1;
                     PlayerLevelUP.AttackPowerUp();
@@ -525,6 +530,12 @@ public class Attributes : MonoBehaviour
                 description = "获得更大的视野",
 
                 unlockAction = (int L) => {
+                    if(IsPlayer==0)
+                    {
+                        VisionRange+=1;
+                        RobotVision.ChangeVision();
+                        return;
+                    }
                     if (L == 1) Camera.main.GetComponent<CameraZoom>().maxSize=8f;
                     else if (L == 2) Camera.main.GetComponent<CameraZoom>().maxSize=9f;
                     else if (L == 3) Camera.main.GetComponent<CameraZoom>().maxSize=10f;

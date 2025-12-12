@@ -23,6 +23,7 @@ public class ItemCollector : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (Attributes == null) return;
         if (Attributes.IsPlayer == 3) return;
         //Debug.LogFormat("吃樱桃器查询碰撞中，当前碰到物品标签为{0}", collision.gameObject.tag);
 

@@ -45,6 +45,7 @@ public class PlayerLife : MonoBehaviour
         {
             //transform.parent.gameObject.GetComponent<FindPool>().MyPool.gameObject.GetComponent<EverythingPool>().ReturnItem(transform.parent.gameObject);
             Attributes.hp = Attributes.MaxHP;//这样怪物一直重生我可以一直杀杀杀
+            Attributes.EnemyAI.Reset();
             ReSpawn();
         }
         else if (Attributes.IsPlayer == 2)//召唤物死亡直接扔进对象池没什么好说的
@@ -74,8 +75,7 @@ public class PlayerLife : MonoBehaviour
     public void ReSpawn()
     {
         //Debug.LogFormat("正在为{0}设置出生点",Attributes.name);
-        if (GenerateSpawnPoint != null && Attributes != null) Attributes.transform.position = GenerateSpawnPoint.FindAPlaceToSpawn();
-        else if (GenerateSpawnPoint == null) Debug.Log("没有找到GenerateSpawnPoint");
-        else if (Attributes == null) Debug.Log("没有找到Attributes");
+        if(Attributes.IsPlayer==1)Attributes.transform.position = GenerateSpawnPoint.FindAPlaceToSpawn();
+        if (Attributes.IsPlayer == 0) Attributes.transform.parent.transform.position = GenerateSpawnPoint.FindAPlaceToSpawn();
     }
 }

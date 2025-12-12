@@ -94,22 +94,35 @@ public class PlayerLevelUP : MonoBehaviour
         }
         Attributes.DefenseLV += 1;
         Attributes.Defense = 1.2f * Mathf.Pow(Attributes.DefenseLV, 0.5f);
+        Attributes.Defense *= Attributes.AbilityThornsSheild;
         if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon && Attributes.Defense >= Attributes.AbilitySummonMaxDefense)
         {
             Attributes.Defense = Attributes.AbilitySummonMaxDefense;
         }
+        if (Attributes.IsPlayer == 1)
+        {
+            Attributes.PlayerUI.UpdateTips("当前防御力:" + KeepOne(Attributes.Defense));
+        }
         HideButton();
+    }
+    float KeepOne(float a)
+    {
+        return ((float)((int)(a * 10))) / 10;
     }
     public void AttackPowerUp()
     {
         Attributes.AttackPowerLV += 1;
         Attributes.AttackPower = 1f + 1f * Mathf.Pow(Attributes.AttackPowerLV, 0.6f);
         Attributes.AttackPower *= Attributes.AbilitySniperAttackEnhance;//狙击流增伤
+        if (Attributes.IsPlayer == 1)
+        {
+            Attributes.PlayerUI.UpdateTips("当前攻击力:" + KeepOne(Attributes.AttackPower));
+        }
         HideButton();
     }
     public void AttackRangeUp()
     {
-        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Assassin || Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon && Attributes.IsPlayer == 1)
+        if ((Attributes.MyStyle == (int)Attributes.AbilityStyle.Assassin || Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon) && Attributes.IsPlayer == 1)
         {
             Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("攻击范围对近战无效");
             Debug.Log("已经到达最大上限");//升级前检测是否还能升级 刺客流限制范围 召唤流同样无效
@@ -122,16 +135,20 @@ public class PlayerLevelUP : MonoBehaviour
             return;
         }
         Attributes.AttackRangeLV += 1;
-        Attributes.AttackRange = 5f + 0.3f * Mathf.Pow(Attributes.AttackRangeLV, 0.3f);
+        Attributes.AttackRange = 5f + 1f * Mathf.Pow(Attributes.AttackRangeLV, 0.3f);
         Attributes.AttackRange *= Attributes.AbilitySniperRangeEnhance;//狙击流增加范围
         if (Attributes.MyStyle == (int)Attributes.AbilityStyle.FirePower && Attributes.AttackRange >= Attributes.AbilityFirePowerMaxAttackRange)
         {
             Attributes.AttackRange = Attributes.AbilityFirePowerMaxAttackRange;
         }
-        if (Attributes.AttackRange > Attributes.VisionRange)
+        if (Attributes.AttackRange > Attributes.VisionRange &&Attributes.IsPlayer==0)
         {
             Attributes.VisionRange = Attributes.AttackRange;//如果攻击范围更大，则视野范围也更大
             Attributes.RobotVision.ChangeVision();//更新视野大小
+        }
+        if (Attributes.IsPlayer == 1)
+        {
+            Attributes.PlayerUI.UpdateTips("当前攻击范围:"+KeepOne(Attributes.AttackRange));
         }
         HideButton();
     }
@@ -159,6 +176,10 @@ public class PlayerLevelUP : MonoBehaviour
         if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Sniper && Attributes.MoveSpeed > Attributes.AbilitySniperMaxMoveSpeed)
         {
             Attributes.MoveSpeed = Attributes.AbilitySniperMaxMoveSpeed;//狙击流的限制
+        }
+        if (Attributes.IsPlayer == 1)
+        {
+            Attributes.PlayerUI.UpdateTips("当前移速:" + KeepOne(Attributes.MoveSpeed));
         }
         HideButton();
     }

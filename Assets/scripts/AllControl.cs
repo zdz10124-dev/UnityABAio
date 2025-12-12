@@ -30,7 +30,7 @@ public class AllControl : MonoBehaviour
         public int AbilityButtonR = 300;//abilitybutton中心点所在范围
         public int AbilityButtonBias = 300;//设置一下偏移方便居中
         //刷新率
-        public int MaxFPS = 60;//目标帧率
+        public int MaxFPS = 120;//目标帧率
         //重生
         public List<float> SpawnRanges = new List<float>{20,15,10,6,4};//复活时周围没有人的半径
         //UI
@@ -49,7 +49,7 @@ public class AllControl : MonoBehaviour
         public float LootXPRate = 0.1f;//杀死敌人时掠夺的经验值
         //场景池相关
         public int BulletPoolSize = 300;
-        public int FruitPoolSize = 100;
+        public int FruitPoolSize = 300;
         //突然意识到在inspoector里设置poolsize更好，能更好的对应每个不同的脚本
         //鉴于前面这两个已经写了就保留吧，其他的poolsize请在特定的脚本里设置
 
