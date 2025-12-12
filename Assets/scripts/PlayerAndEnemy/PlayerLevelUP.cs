@@ -52,11 +52,27 @@ public class PlayerLevelUP : MonoBehaviour
     }
     void RobotAttributeEnhancement()
     {
-        int p = Random.Range(0, 4);//也许这里是屎山的根源之一，但是我现在懒得重构了，所以就用ifelse了。。。
-        if (p == 0) DefenseUp();
+        int p;//也许这里是屎山的根源之一，但是我现在懒得重构了，所以就用ifelse了。。。
+        while (true)
+        {
+            p = Random.Range(0, 4);
+            if (p == 0 && Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon &&Attributes.Defense>=Attributes.AbilitySummonMaxDefense) continue;
+            if (p == 2 && Attributes.MyStyle == (int)Attributes.AbilityStyle.Assassin && Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon) continue;
+            if (p == 3 && Attributes.MyStyle == (int)Attributes.AbilityStyle.Thorns && Attributes.MyStyle == (int)Attributes.AbilityStyle.Sniper) continue;
+            break;
+        }
+        if (p == 0 ) DefenseUp();
         else if (p == 1) AttackPowerUp();
         else if (p == 2) AttackRangeUp();
         else if (p == 3) MoveSpeedUp();
+
+        Ability Ability = GetRandomAbilities(1)[0];//让机器人也能获得能力
+        if (Ability != null)
+        {
+            Debug.LogFormat("机器人获得能力，当前能力{0}", Ability.abilityName);
+            Ability.AbilityLevel++;//能力等级+1
+            Ability.unlockAction(Ability.AbilityLevel);
+        }
         WaitQueue--;
     }
     void AttributeEnhancement()
@@ -70,7 +86,7 @@ public class PlayerLevelUP : MonoBehaviour
     }
     public void DefenseUp()
     {
-        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon && Attributes.Defense >= Attributes.AbilitySummonMaxDefense)
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon && Attributes.Defense >= Attributes.AbilitySummonMaxDefense && Attributes.IsPlayer == 1)
         {
             Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("防御力已经到达最大上限");
             Debug.Log("已经到达最大上限");//升级前检测是否还能升级 召唤流限制防御力
@@ -93,13 +109,13 @@ public class PlayerLevelUP : MonoBehaviour
     }
     public void AttackRangeUp()
     {
-        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Assassin || Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon)
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Assassin || Attributes.MyStyle == (int)Attributes.AbilityStyle.Summon && Attributes.IsPlayer == 1)
         {
             Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("攻击范围对近战无效");
             Debug.Log("已经到达最大上限");//升级前检测是否还能升级 刺客流限制范围 召唤流同样无效
             return;
         }
-        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.FirePower && Attributes.AttackRange >= Attributes.AbilityFirePowerMaxAttackRange)
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.FirePower && Attributes.AttackRange >= Attributes.AbilityFirePowerMaxAttackRange && Attributes.IsPlayer == 1)
         {
             Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("攻击范围已经到达最大上限");
             Debug.Log("已经到达最大上限");//升级前检测是否还能升级 火力流限制范围
@@ -112,17 +128,22 @@ public class PlayerLevelUP : MonoBehaviour
         {
             Attributes.AttackRange = Attributes.AbilityFirePowerMaxAttackRange;
         }
+        if (Attributes.AttackRange > Attributes.VisionRange)
+        {
+            Attributes.VisionRange = Attributes.AttackRange;//如果攻击范围更大，则视野范围也更大
+            Attributes.RobotVision.ChangeVision();//更新视野大小
+        }
         HideButton();
     }
     public void MoveSpeedUp()
     {
-        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Thorns && Attributes.MoveSpeed >= Attributes.AbilityThornsMaxMoveSpeed)
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Thorns && Attributes.MoveSpeed >= Attributes.AbilityThornsMaxMoveSpeed && Attributes.IsPlayer==1)
         {
             Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("移速已经到达最大上限");
             Debug.Log("已经到达最大上限");//升级前检测是否还能升级 反伤流限制移速
             return;
         }
-        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Sniper && Attributes.MoveSpeed >= Attributes.AbilitySniperMaxMoveSpeed)
+        if (Attributes.MyStyle == (int)Attributes.AbilityStyle.Sniper && Attributes.MoveSpeed >= Attributes.AbilitySniperMaxMoveSpeed && Attributes.IsPlayer == 1)
         {
             Attributes.gameObject.GetComponent<PlayerUI>().UpdateTips("移速已经到达最大上限");
             Debug.Log("已经到达最大上限");//升级前检测是否还能升级 狙击流限制移速

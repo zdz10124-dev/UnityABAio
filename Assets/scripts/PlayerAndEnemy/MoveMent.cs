@@ -48,12 +48,12 @@ public class Movement : MonoBehaviour
             if (Attributes.SummonHelpEat)
             {
                 Attributes.SummonHelpEat = false;
-                Attributes.PlayerUI.UpdateTips("帮吃已关闭");
+                if(Attributes.IsPlayer == 1) Attributes.PlayerUI.UpdateTips("帮吃已关闭");
             }
             else
             {
                 Attributes.SummonHelpEat = true;
-                Attributes.PlayerUI.UpdateTips("帮吃已打开");
+                if (Attributes.IsPlayer == 1) Attributes.PlayerUI.UpdateTips("帮吃已打开");
             }
         }
     }
@@ -66,7 +66,7 @@ public class Movement : MonoBehaviour
             {
                 Attributes.RemoveACreature(0);//如果超了，就删了再重新生成一个
             }
-            Attributes.Summon(position);
+            Attributes.Summon(rb.transform.position+(position-rb.transform.position).normalized);//原本是position的后来感觉太超模改了
         }
     }
     public void PressStayLeftShift(Vector2 v)
@@ -76,7 +76,7 @@ public class Movement : MonoBehaviour
             rb.transform.position += new Vector3((v * Attributes.AbilityAssassinFlashRange).x, (v * Attributes.AbilityAssassinFlashRange).y, 0);//闪现
             Attributes.FlashCount -= 1;//使用一次闪现
             Attributes.FlashCD = Attributes.AbilityAssassinFlashCD;//重置CD
-            Attributes.PlayerUI.FlashPicture.gameObject.SetActive(false);//去除图标
+            if(Attributes.IsPlayer==1)Attributes.PlayerUI.FlashPicture.gameObject.SetActive(false);//去除图标
         }
     }
     void attack()

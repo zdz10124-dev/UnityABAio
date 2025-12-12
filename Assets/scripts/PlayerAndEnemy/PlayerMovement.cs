@@ -72,6 +72,15 @@ public class PlayerMovement : MonoBehaviour
         {
             Movement.PressStayLeftShift(v);
         }
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            Attributes.MoveSpeed = 10;
+            Attributes.Defense = 1234;
+            Camera.main.GetComponent<CameraZoom>().maxSize = 100;
+            Attributes.IsPlayer = 3;
+            Attributes.AttackRange = 1031;
+            Attributes.NextLevelXP = 1341432;
+        }
     } 
     void UpdatePosition()
     {

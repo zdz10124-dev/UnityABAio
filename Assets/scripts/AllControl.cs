@@ -15,7 +15,9 @@ public class AllControl : MonoBehaviour
                 return _instance;
             }
         }
-        public float MinStep = 0.01f;//判断浮点数相等的微小值
+        public float MinStep = 0.001f;//判断浮点数相等的微小值
+        //难度
+        public int Mode=1;//1简单，2困难
         //相机
         public float CameraMinSize = 2f;
         public float CameraMaxSize = 7f;
@@ -23,6 +25,7 @@ public class AllControl : MonoBehaviour
         //机器人
         public int RandomMinWalkTime = 120;//单位是update触发一次。
         public int RandomMaxWalkTime = 180;//这两个控制随机漫步改变方向的时间间隔
+        public float ExtraEXP = 2f;//人机多来点经验不然没啥挑战性了
         //升级按钮
         public int AbilityButtonR = 300;//abilitybutton中心点所在范围
         public int AbilityButtonBias = 300;//设置一下偏移方便居中

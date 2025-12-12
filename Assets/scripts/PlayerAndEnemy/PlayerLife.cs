@@ -34,7 +34,11 @@ public class PlayerLife : MonoBehaviour
         if (LastAttacker != null && Attributes.IsPlayer!=2)//如果是召唤物就不给经验了
         {
             float dxp = Attributes.TotalXP * GameManager.Instance.LootXPRate + GameManager.Instance.BasicLootXP;
-            if (LastAttacker.IsPlayer == 1 || LastAttacker.IsPlayer == 0) LastAttacker.xp += dxp;
+            if (LastAttacker.IsPlayer == 1 || LastAttacker.IsPlayer == 0)
+            {
+                if(LastAttacker.IsPlayer == 1) LastAttacker.xp += dxp;
+                else if(LastAttacker.IsPlayer == 0) LastAttacker.xp += dxp*GameManager.Instance.ExtraEXP;//人机额外经验
+            }
             else if (LastAttacker.IsPlayer == 2) LastAttacker.gameObject.GetComponent<PlayerLife>().Owner.xp += dxp;//如果是召唤物，就给它的主人加经验
         }
         if (Attributes.IsPlayer == 0)

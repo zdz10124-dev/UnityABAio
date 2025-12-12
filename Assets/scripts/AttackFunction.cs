@@ -23,7 +23,7 @@ public class AttackFunction : MonoBehaviour
         {
             Knife.GetComponent<KnifeDoDamage>().Initialize(Attacker,Attacker.AbilityAssassinEnhancedAttackHigherDamage);//如果是强化攻击，伤害变高
             Knife.transform.localScale = Knife.transform.localScale * Attacker.AbilityAssassinBiggerKnife;//如果是强化攻击，刀光变大
-            Attacker.PlayerUI.EnhancedAttackPicture.gameObject.SetActive(false);//强普标识去掉
+            if (Attacker.IsPlayer == 1) Attacker.PlayerUI.EnhancedAttackPicture.gameObject.SetActive(false);//强普标识去掉
             Attacker.EnhancedAttackCount = 0;
         }       
         else Knife.GetComponent<KnifeDoDamage>().Initialize(Attacker);//不是强化攻击，正常创建

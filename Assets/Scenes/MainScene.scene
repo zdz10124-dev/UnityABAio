@@ -675,7 +675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemPrefab: {fileID: 8274819940489091724}
-  PoolSize: 50
+  PoolSize: 100
 --- !u!1 &295367349
 GameObject:
   m_ObjectHideFlags: 0
@@ -2389,6 +2389,17 @@ Transform:
   - {fileID: 91707622}
   m_Father: {fileID: 612734845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &805224727 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1525736267165090051, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+  m_PrefabInstance: {fileID: 5576716385803805161}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8df373c7d55dde94d9b498e218705418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &897036547
 GameObject:
   m_ObjectHideFlags: 0
@@ -3262,7 +3273,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1240767749478782413, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
   m_PrefabInstance: {fileID: 5576716385803805161}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1332094554}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8faad60352ec287449edbaf05d79b78b, type: 3}
@@ -3654,6 +3665,46 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5522242667803959642, guid: a1dab6db9a2c4e64b920d014a156a6ea, type: 3}
   m_PrefabInstance: {fileID: 8506931295584212237}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1332094554 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1761828017575749538, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+  m_PrefabInstance: {fileID: 5576716385803805161}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1332094555 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 147797917606831346, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+  m_PrefabInstance: {fileID: 5576716385803805161}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332094554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faad1b5fdfea4d4459a5209f4874bd47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1332094556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332094554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d102d775cfcbb26489d8cbf593ba46d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackFunction: {fileID: 2128316298}
+--- !u!114 &1332094560 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2132883689897456518, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+  m_PrefabInstance: {fileID: 5576716385803805161}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332094554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 056e5921bd534b446895898708a4d964, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1372424505
 GameObject:
   m_ObjectHideFlags: 0
@@ -3747,7 +3798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemPrefab: {fileID: 11642046}
-  PoolSize: 100
+  PoolSize: 500
 --- !u!1 &1381649944
 GameObject:
   m_ObjectHideFlags: 0
@@ -5223,10 +5274,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f2a2973648fe048bf041402b02b3a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSize: 8813000088130000
-  MinSize: b80b0000b80b0000
-  MaxEnemyCount: 140000001400000064000000
-  MinEnemyCount: 06000000060000001e000000
+  MaxSize: 88130000401f0000
+  MinSize: b80b000088130000
+  MaxEnemyCount: 140000002800000064000000
+  MinEnemyCount: 14000000140000001e000000
   GenerateSpawnPoint: {fileID: 2103374261}
   GenerateSpecialBuilding: 15
   GenerateCommonBuilding: 250
@@ -6435,9 +6486,21 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 147797917606831346, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+      propertyPath: RobotVision
+      value: 
+      objectReference: {fileID: 805224727}
+    - target: {fileID: 147797917606831346, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+      propertyPath: PlayerLevelUP
+      value: 
+      objectReference: {fileID: 1332094560}
+    - target: {fileID: 147797917606831346, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
       propertyPath: DamageLinePool
       value: 
       objectReference: {fileID: 1408266746}
+    - target: {fileID: 147797917606831346, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+      propertyPath: SummonCreatruePool
+      value: 
+      objectReference: {fileID: 289046500}
     - target: {fileID: 278855059190036553, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.3
@@ -6486,6 +6549,14 @@ PrefabInstance:
       propertyPath: Pool
       value: 
       objectReference: {fileID: 642554825}
+    - target: {fileID: 1525736267165090051, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+      propertyPath: Attributes
+      value: 
+      objectReference: {fileID: 1332094555}
+    - target: {fileID: 1758989986159788335, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+      propertyPath: Movement
+      value: 
+      objectReference: {fileID: 1332094556}
     - target: {fileID: 1758989986159788335, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
       propertyPath: AttackFunction
       value: 
@@ -6531,7 +6602,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7083574909037047085, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1595235966}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1761828017575749538, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1332094556}
   m_SourcePrefab: {fileID: 100100000, guid: c68d44f8ae9d22e4397338ae0ccde39e, type: 3}
 --- !u!212 &5708111623642166664
 SpriteRenderer:
@@ -7241,6 +7315,7 @@ MonoBehaviour:
   PlayerLevelUP: {fileID: 0}
   OthersUI: {fileID: 0}
   PlayerUI: {fileID: 0}
+  RobotVision: {fileID: 0}
 --- !u!114 &8445203376846841506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7433,6 +7508,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2710612125433240302, guid: 9fd04337077638b46952899617612662, type: 3}
+      propertyPath: m_TagString
+      value: bullet
+      objectReference: {fileID: 0}
     - target: {fileID: 5292847310196179473, guid: 9fd04337077638b46952899617612662, type: 3}
       propertyPath: Pool
       value: 
@@ -7455,7 +7534,7 @@ PrefabInstance:
       objectReference: {fileID: 1408266746}
     - target: {fileID: 6246787573305598843, guid: 9fd04337077638b46952899617612662, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

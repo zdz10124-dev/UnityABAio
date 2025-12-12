@@ -9,6 +9,7 @@ TagManager:
   - rock
   - cover
   - vision
+  - bullet
   layers:
   - Default
   - TransparentFX

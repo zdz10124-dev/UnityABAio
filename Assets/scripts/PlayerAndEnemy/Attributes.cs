@@ -127,6 +127,7 @@ public class Attributes : MonoBehaviour
     public PlayerLevelUP PlayerLevelUP;
     public OthersUI OthersUI;
     public PlayerUI PlayerUI;
+    public RobotVision RobotVision;
     // Start is called before the first frame update
     public void Reset()//用于死后重置
     {
@@ -214,14 +215,16 @@ public class Attributes : MonoBehaviour
 }
     private void Awake()
     {
+        InitializeAbilities(); // 初始化能力列表
         if(IsPlayer==1)
         {
-            InitializeAbilities(); // 初始化能力列表
+            
             PlayerUI= gameObject.GetComponent<PlayerUI>();
         }
         if (IsPlayer==1 ||IsPlayer==0)//召唤物的队伍由主人赋值，不需要在这里进行设置
         {
-            Team=++GameManager.Instance.TeamCount;//设置队伍
+            if(GameManager.Instance.Mode==1)Team=++GameManager.Instance.TeamCount;//设置队伍
+            else if (GameManager.Instance.Mode == 2) Team = +IsPlayer;//设置队伍 如果普通模式则与所有人为敌
         }
         rb = gameObject.GetComponent<Rigidbody2D>();
         OthersUI = gameObject.GetComponent<OthersUI>();
@@ -651,7 +654,7 @@ public class Attributes : MonoBehaviour
             },
             new Ability {
                 abilityName = "爆炸子弹",
-                description = "使子弹追踪敌人",
+                description = "使子弹击中敌人时爆炸造成范围伤害",
 
                 unlockAction = (int L) => {
                     if(L==1){AbilityFirePowerExplodeRange=2f; AbilityFirePowerExplodeDamageRate=0.3f; }//爆炸范围
@@ -677,6 +680,7 @@ public class Attributes : MonoBehaviour
                 unlockAction = (int L) => {
                     if(L==1)
                     {
+                        AttackRange=0;
                         MyStyle = (int)AbilityStyle.Assassin;
                         AttackTime=5;//近战的攻速有所增加
                     }
@@ -775,10 +779,12 @@ public class Attributes : MonoBehaviour
             //召唤流
             new Ability {
                 abilityName = "召唤",
-                description = "可以右键召唤召唤物，左键控制召唤物攻击，但你的防御力上限设为2。召唤物有移速上限，其他属性按比例继承你的属性。最多召唤五个。注：任何属性的更改必须重新召唤才生效",
+                description = "可以右键召唤召唤物到人物附近，左键控制召唤物攻击，但你的防御力上限设为2。召唤物有移速上限，其他属性按比例继承你的属性。最多召唤五个。注：任何属性的更改必须重新召唤才生效",
 
                 unlockAction = (int L) => {
-                
+                    VisionRange=8;
+                    if(IsPlayer==0)RobotVision.ChangeVision();//召唤师机器人代偿更多视野
+                    AttackRange = 0;
                     MyStyle = (int)AbilityStyle.Summon;
                     AttackTime=5;//近战的攻速有所增加
                     PlayerLevelUP.WaitQueue++;
@@ -875,6 +881,7 @@ public class Attributes : MonoBehaviour
 
                 unlockAction = (int L) => {
                     AbilitySummonHelpEat=true;
+                    SummonHelpEat=true;
                 },
                 AbleCheck = (int L)=>
                 {
